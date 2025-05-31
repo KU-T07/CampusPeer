@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818064577257",
+    "project_id": "campuspeer-27823",
+    "storage_bucket": "campuspeer-27823.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818064577257:android:ce6118ca4849a9b2119678",
+        "android_client_info": {
+          "package_name": "com.example.campuspeer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDxS7D4Qr8pGgxql-P2pLZ4i9H0lvuZnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
