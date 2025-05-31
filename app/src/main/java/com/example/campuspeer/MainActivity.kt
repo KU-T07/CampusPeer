@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var currentUserId by rememberSaveable { mutableStateOf(Firebase.auth.currentUser?.uid) }
 
-            // Firebase 로그인 유지 상태 확인
             LaunchedEffect(Unit) {
                 val uid = Firebase.auth.currentUser?.uid
                 Log.d("MainActivity", "초기 로그인 상태 uid = $uid")
