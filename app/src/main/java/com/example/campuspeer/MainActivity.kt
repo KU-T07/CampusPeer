@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
+import com.example.campuspeer.uicomponents.MapComponent.TestScreen
 import com.example.campuspeer.auth.LoginScreen
 import com.example.campuspeer.navigation.NavGraph
 import com.google.firebase.Firebase
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
                         currentUserId = uid
                     }
                 )
+                //TestScreen()
             } else {
                 Log.d("MainActivity", "NavGraph 진입, uid = $currentUserId")
                 NavGraph(navController = navController, currentUserId = currentUserId!!)
