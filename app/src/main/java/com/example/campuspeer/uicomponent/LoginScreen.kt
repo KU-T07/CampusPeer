@@ -1,4 +1,4 @@
-package com.example.campuspeer.auth
+package com.example.campuspeer.uicomponent
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
