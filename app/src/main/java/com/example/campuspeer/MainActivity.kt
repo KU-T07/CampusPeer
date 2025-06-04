@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
                 Log.d("MainActivity", "NavGraph 진입, uid = $currentUserId")
                 NavGraph(navController = navController, currentUserId = currentUserId!!)
             }
-            //2025/05/31
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.campuspeer.itemBoard
 
+import com.example.campuspeer.model.PostItem
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
