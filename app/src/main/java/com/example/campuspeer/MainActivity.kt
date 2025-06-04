@@ -16,6 +16,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+
             LoginNaviGraph(navController = navController, "T3SDNm5GqYfNSEb8KIqX2aCxFmc2")
         }
     }
