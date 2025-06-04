@@ -78,8 +78,27 @@ class EmailAuthViewModel : ViewModel() {
     // 기존 사용자 이메일+비번으로 로그인
     fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.message) }
+            .addOnSuccessListener {
+                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
+                usersRef.child(uid).get()
+                    .addOnSuccessListener { snapshot ->
+                        val verified = snapshot.child("verified").getValue(Boolean::class.java) ?: false
+                        if (verified) {
+                            onResult(true, null)
+                        } else {
+                            // 승인 안 된 사용자
+                            auth.signOut() // 인증만 해놓고 로그아웃 처리
+                            onResult(false, "관리자 승인이 필요합니다.")
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        auth.signOut()
+                        onResult(false, "유저 정보 조회 실패: ${e.message}")
+                    }
+            }
+            .addOnFailureListener { e ->
+                onResult(false, e.message)
+            }
     }
 
     fun getCurrentUserId(): String? {

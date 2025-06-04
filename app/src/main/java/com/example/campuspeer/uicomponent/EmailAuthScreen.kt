@@ -131,9 +131,15 @@ fun EmailAuthScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(value = department, onValueChange = { department = it }, label = { Text("학과 예 : 컴퓨터공학부") })
+        OutlinedTextField(
+            value = department,
+            onValueChange = { department = it },
+            label = { Text("학과 예 : 컴퓨터공학부") })
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = studentNumber, onValueChange = { studentNumber = it }, label = { Text("학번 예 : 202512345") })
+        OutlinedTextField(
+            value = studentNumber,
+            onValueChange = { studentNumber = it },
+            label = { Text("학번 예 : 202512345") })
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -149,9 +155,15 @@ fun EmailAuthScreen(
             }
             viewModel.updatePassword(password) { success, error ->
                 if (success) {
-                    sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
-                    message = "비밀번호가 변경되고 승인 요청이 전송되었습니다."
-                    onNavigateToLogin()
+                    viewModel.saveUserInfo(department, studentNumber) { saveSuccess ->
+                        if (!saveSuccess) {
+                            message = "사용자 정보 저장 실패"
+                            return@saveUserInfo
+                        }
+                        sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
+                        message = "비밀번호가 변경되고 승인 요청이 전송되었습니다."
+                        onNavigateToLogin()
+                    }
                 } else {
                     message = "비밀번호 변경 실패: $error"
                 }
