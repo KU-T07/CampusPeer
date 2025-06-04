@@ -19,6 +19,7 @@ sealed class Routes(val route: String, val isRoot: Boolean = true) {
     object User : Routes("User")
     object Login : Routes("Login", false)
     object Register : Routes("Register",false)
+    object ItemBoard : Routes("ItemBoard", false)
 
     companion object {
         fun getRoutes(route: String): Routes {
