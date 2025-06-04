@@ -28,12 +28,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.campuspeer.LocalEmailAuthViewModelOwner
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NaviGraph
 import com.example.campuspeer.uicomponent.DrawerContent
+import com.example.campuspeer.viewmodel.EmailAuthViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,6 +67,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
         }
     }
+    val owner: ViewModelStoreOwner = LocalEmailAuthViewModelOwner.current
+    val viewModel: EmailAuthViewModel = viewModel(viewModelStoreOwner = owner)
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -132,6 +137,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                        currentUserId = "dummyUserId",
                        startRoute = Routes.PostItemList.route
                    )
+                    Text(text = viewModel.getCurrentUserId().toString())
                 }
             }
         }

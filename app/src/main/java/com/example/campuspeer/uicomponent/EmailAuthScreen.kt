@@ -29,16 +29,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.campuspeer.LocalEmailAuthViewModelOwner
 import com.example.campuspeer.util.sendEmailToAdmin
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
 @Composable
 fun EmailAuthScreen(
-    onNavigateToLogin: () -> Unit,
-    viewModel: EmailAuthViewModel = viewModel()
+    onNavigateToLogin: () -> Unit
 ) {
     val context = LocalContext.current
+
+    val owner: ViewModelStoreOwner = LocalEmailAuthViewModelOwner.current
+    val viewModel: EmailAuthViewModel = viewModel(viewModelStoreOwner = owner)
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
