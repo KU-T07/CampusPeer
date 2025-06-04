@@ -30,10 +30,6 @@ fun CategorySelector(
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = "category",
-            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
-        )
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
@@ -43,7 +39,7 @@ fun CategorySelector(
         ) {
             OutlinedTextField(
                 value = selectedCategory.label, // enum의 label 사용
-                onValueChange = { /* 읽기 전용이므로 직접 변경하지 않음 */ },
+                onValueChange = { },
                 readOnly = true,
                 label = { Text("카테고리") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
