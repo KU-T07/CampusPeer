@@ -28,7 +28,7 @@ import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigateToWelcome: (String) -> Unit,
+    onNavigateToMain: (String) -> Unit,
     onRegisterNavigate: () -> Unit, // ✅ 추가된 부분
     viewModel: EmailAuthViewModel = viewModel()
 ) {
@@ -62,7 +62,7 @@ fun LoginScreen(
                     if (success) {
                         print("성공")
                         // 로그인 성공 시 화면 이동
-                        onNavigateToWelcome(viewModel.getCurrentUserId() ?: "") // userId가 필요 없다면 이대로
+                        onNavigateToMain(viewModel.getCurrentUserId() ?: "") // userId가 필요 없다면 이대로
                     } else {
                         Toast.makeText(context, error ?: "로그인 실패", Toast.LENGTH_SHORT).show()
                     }

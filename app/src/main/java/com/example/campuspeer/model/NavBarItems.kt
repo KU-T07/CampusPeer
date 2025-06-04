@@ -5,10 +5,10 @@ import com.example.campuspeer.R
 object NavBarItems{
     val BarItems = listOf(
         BarItem(
-            title = Routes.Home.route,
+            title = Routes.Main.route,
             selectIcon = R.drawable.baseline_home_24,
             onSelectedIcon = R.drawable.outline_home_24,
-            route = Routes.Home.route
+            route = Routes.Main.route
         ),
         BarItem(
             title = Routes.HelpBoard.route,

@@ -32,8 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
-import com.example.campuspeer.navigation.NavGraph
-
+import com.example.campuspeer.navigation.NaviGraph
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,7 +59,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             backStackEntry?.destination?.route?.let {
                 Routes.getRoutes(it)
             } ?: run {
-                Routes.Home
+                Routes.Main
             }
         }
     }
@@ -118,19 +117,19 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         BottomNavigationBar(navController)
                 },
                 floatingActionButton = {
-                    if (currentRoute == Routes.Home)
+                    if (currentRoute == Routes.Main)
                         FloatingActionButton(onClick = {
-                            navController.navigate(Routes.AddItem.route)
+                            navController.navigate(Routes.PostItemCreate.route)
                         }) {
                             Icon(imageVector = Icons.Default.Add, contentDescription = "")
                         }
                 }
             ) { contentPadding ->
                 Column(modifier = Modifier.padding(contentPadding)) {
-                    NavGraph(
-                        navController = navController,
-                        currentUserId = "dummyUserId"
-                    )
+                   NaviGraph(
+                       navController = navController,
+                       currentUserId = "dummyUserId"
+                   )
                 }
             }
         }

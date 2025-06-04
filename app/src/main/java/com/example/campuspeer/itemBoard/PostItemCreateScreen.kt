@@ -165,8 +165,8 @@ fun PostItemCreateScreen(
                 repository.addPost(post,
                     onSuccess = {
                         // 성공적으로 등록된 경우 뒤로 가기 등 처리
-                        navController.navigate(Routes.Home.route){
-                            popUpTo(Routes.Home.route) {inclusive = true}
+                        navController.navigate(Routes.Main.route){
+                            popUpTo(Routes.Main.route) {inclusive = true}
                         }
                     },
                     onFailure = {

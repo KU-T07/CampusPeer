@@ -4,9 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
-import com.example.campuspeer.navigation.LoginNaviGraph
+import com.example.campuspeer.navigation.NaviGraph
 import com.example.campuspeer.uicomponent.LoginScreen
-import com.example.campuspeer.navigation.NavGraph
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
@@ -16,7 +15,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            LoginNaviGraph(navController = navController, "T3SDNm5GqYfNSEb8KIqX2aCxFmc2")
+            NaviGraph(navController = navController, "T3SDNm5GqYfNSEb8KIqX2aCxFmc2")
         }
     }
 }
