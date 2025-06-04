@@ -16,10 +16,10 @@ fun NavGraphBuilder.mainNavGraph(
     currentUserId: String
 ) {
     navigation(
-        startDestination = Routes.Home.route,
+        startDestination = Routes.Main.route,
         route = Routes.Main.route
     ) {
-        composable(Routes.Home.route) {
+        composable(Routes.Main.route) {
             PostItemListScreen(
                 allPosts = TODO(),
                 selectedCategory = TODO()
@@ -30,7 +30,7 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
 
-        composable(Routes.AddItem.route) {
+        composable(Routes.PostItemCreate.route) {
             PostItemCreateScreen(
                 navController = navController,  // 전달
                 onBackClick = { navController.popBackStack() }

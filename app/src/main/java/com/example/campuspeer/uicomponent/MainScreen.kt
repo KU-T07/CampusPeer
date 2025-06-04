@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NaviGraph
+import com.example.campuspeer.uicomponent.DrawerContent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -117,7 +118,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         BottomNavigationBar(navController)
                 },
                 floatingActionButton = {
-                    if (currentRoute == Routes.Main)
+                    if (currentRoute == Routes.PostItemList)
                         FloatingActionButton(onClick = {
                             navController.navigate(Routes.PostItemCreate.route)
                         }) {
@@ -128,7 +129,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 Column(modifier = Modifier.padding(contentPadding)) {
                    NaviGraph(
                        navController = navController,
-                       currentUserId = "dummyUserId"
+                       currentUserId = "dummyUserId",
+                       startRoute = Routes.PostItemList.route
                    )
                 }
             }
