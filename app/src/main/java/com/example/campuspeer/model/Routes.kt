@@ -1,6 +1,8 @@
 package com.example.campuspeer.model
 
 sealed class Routes (val route: String, val isRoot: Boolean = true) {
+    object Login : Routes("LoginScreen")
+    object EmailAuth : Routes("EmailAuthScreen")
     object Home : Routes("Home")
     object ItemBoard : Routes("ItemBoard")
     object ItemInfo : Routes("ItemINfo")
