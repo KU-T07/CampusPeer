@@ -20,7 +20,7 @@ import com.google.firebase.auth.auth
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: (String) -> Unit
+    onLoginSuccess: (String) -> Unit, onRegisterNavigate: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -42,6 +42,10 @@ fun LoginScreen(
         }) {
             Text("로그인")
         }
+
+        Button(onClick = {
+            onRegisterNavigate()
+        }) { }
 
         errorMessage?.let { Text("오류: $it", color = Color.Red) }
     }
