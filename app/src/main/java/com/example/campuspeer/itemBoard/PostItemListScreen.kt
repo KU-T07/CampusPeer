@@ -1,26 +1,38 @@
 package com.example.campuspeer.itemBoard
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.example.campuspeer.model.Category
+import com.example.campuspeer.model.PostItem
 
 @Composable
 fun PostItemListScreen(
-    navController: NavController,
-    viewModel: PostItemViewModel = viewModel()
+    allPosts: List<PostItem>,
+    selectedCategory: Category,
+    onItemClick: (PostItem) -> Unit
 ) {
-    val posts by viewModel.posts.collectAsState()
+    /*Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Icon(
+            imageVector = Icons.Default.Menu,
+            contentDescription = "contacts",
+            tint = Color.Blue,
+            modifier = Modifier
+                .size(150.dp)
+                .align(Alignment.Center)
+        )
+    }*/
+    val filteredPosts = allPosts.filter { it.category == selectedCategory }
 
-    LazyColumn {
-        items(posts) { post ->
-            PostItemList(post = post) {
-                navController.navigate("detail/${post.id}")
-            }
+    // 리스트 표시
+    PostItemList(
+        posts = filteredPosts,
+        { post ->
+            // 게시글 상세로 이동 등 처리
         }
-    }
+
+    )
+
+
 
 }

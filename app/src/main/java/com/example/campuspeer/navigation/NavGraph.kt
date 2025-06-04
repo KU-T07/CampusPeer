@@ -1,38 +1,47 @@
 package com.example.campuspeer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.campuspeer.chat.ChatRoomListScreen
-import com.example.campuspeer.chat.ChatRoomScreen
+import androidx.navigation.compose.navigation
+import com.example.campuspeer.model.Routes
+import com.example.campuspeer.navigation.mainNavGraph
+import com.example.campuspeer.uicomponent.LoginScreen
+import com.example.campuspeer.uicomponent.RegisterScreen
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    modifier: Modifier = Modifier,
     currentUserId: String
 ) {
+
     NavHost(
         navController = navController,
-        startDestination = "chat_list"
-    ){
-        composable("chat_list"){
-            ChatRoomListScreen(
-                currentUserId = currentUserId,
-                onNavigateToChat = {roomId, partnerId ->
-                    navController.navigate("chat_room/$roomId/$partnerId")
-                }
-            )
-        }
-        composable("chat_room/{roomId}/{partnerId}") { backStackEntry ->
-            val roomId = backStackEntry.arguments?.getString("roomId") ?: return@composable
-            val partnerId = backStackEntry.arguments?.getString("partnerId") ?: return@composable
+        startDestination = Routes.User.route
+    ) {
+        navigation(
+            startDestination = Routes.Login.route,
+            route = Routes.User.route
+        ) {
+            composable(route = Routes.Login.route) {
+                LoginScreen(
+                    onLoginSuccess = { navController.navigate(Routes.Home.route) },
+                    onRegisterNavigate = { navController.navigate(Routes.Register.route) }
+                )
+            }
 
-            ChatRoomScreen(
-                roomId = roomId,
-                currentUserId = currentUserId,
-                partnerId = partnerId
-            )
+
+            composable(route = Routes.Register.route) {
+                RegisterScreen()
+            }
         }
+        mainNavGraph(
+            navController,
+            currentUserId
+        )
     }
 }
+

@@ -10,7 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
-import com.example.campuspeer.auth.LoginScreen
+import com.example.campuspeer.uicomponent.LoginScreen
 import com.example.campuspeer.navigation.NavGraph
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -34,7 +34,8 @@ class MainActivity : ComponentActivity() {
                     onLoginSuccess = { uid ->
                         Log.d("MainActivity", "로그인 성공, uid = $uid")
                         currentUserId = uid
-                    }
+                    },
+                    onRegisterNavigate = TODO()
                 )
             } else {
                 Log.d("MainActivity", "NavGraph 진입, uid = $currentUserId")

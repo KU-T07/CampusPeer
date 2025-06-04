@@ -17,18 +17,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.campuspeer.model.Category // Category enum 임포트
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategorySelector(
-    selectedCategory: String, // 현재 선택된 카테고리
-    onCategorySelected: (String) -> Unit, // 카테고리 선택 시 호출될 콜백
-    modifier: Modifier = Modifier // 외부에서 Modifier를 전달받을 수 있도록 추가
+    selectedCategory: Category, // Category enum 타입으로 변경
+    onCategorySelected: (Category) -> Unit, // Category enum 타입으로 변경
+    modifier: Modifier = Modifier
 ) {
-    val categories = listOf("전자기기", "도서", "의류", "생활용품", "기타") // 예시 카테고리 목록
-    var expanded by remember { mutableStateOf(false) } // 드롭다운 메뉴 확장 상태
+    val categories = Category.entries.toList() // Category enum의 모든 값 가져오기
+    var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxWidth()) { // 외부 Modifier 적용
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = "category",
             modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
@@ -41,7 +42,7 @@ fun CategorySelector(
                 .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
             OutlinedTextField(
-                value = selectedCategory,
+                value = selectedCategory.label, // enum의 label 사용
                 onValueChange = { /* 읽기 전용이므로 직접 변경하지 않음 */ },
                 readOnly = true,
                 label = { Text("카테고리") },
@@ -57,9 +58,9 @@ fun CategorySelector(
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
-                        text = { Text(category) },
+                        text = { Text(category.label) }, // enum의 label 사용
                         onClick = {
-                            onCategorySelected(category)
+                            onCategorySelected(category) // enum 객체 전달
                             expanded = false
                         }
                     )
@@ -72,7 +73,7 @@ fun CategorySelector(
 @Preview(showBackground = true)
 @Composable
 fun CategorySelectorPreview() {
-    var selectedCategory by remember { mutableStateOf("전자기기") }
+    var selectedCategory by remember { mutableStateOf(Category.ELECTRONICS) }
     CategorySelector(
         selectedCategory = selectedCategory,
         onCategorySelected = { category -> selectedCategory = category }
