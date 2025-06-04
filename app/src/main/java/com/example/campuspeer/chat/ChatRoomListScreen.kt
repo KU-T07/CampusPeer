@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.campuspeer.model.ChatRoom
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 

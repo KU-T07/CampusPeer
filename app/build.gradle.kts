@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
-
+    implementation(libs.firebase.database)
     implementation(libs.naver.map.compose)
     implementation(libs.play.services.maps)
     testImplementation(libs.junit)

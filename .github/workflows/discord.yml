@@ -1,0 +1,21 @@
+name: Notify Discord
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send push message to Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            ✅ GitHub에 새로운 커밋이 푸시되었습니다.
+            - 커밋 메시지: ${{ github.event.head_commit.message }}
+            - 푸시한 사람: ${{ github.actor }}
+            - [커밋 보기](${{ github.event.head_commit.url }})
+
