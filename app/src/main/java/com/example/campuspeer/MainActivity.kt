@@ -4,21 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.compose.rememberNavController
-import com.example.campuspeer.itemBoard.PostItemCreateScreen
-import com.example.campuspeer.ui.theme.CampusPeerTheme
+import com.example.campuspeer.navigation.LoginNaviGraph
+import com.example.campuspeer.uicomponent.LoginScreen
+import com.example.campuspeer.navigation.NavGraph
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            CampusPeerTheme {
-                val navController = rememberNavController()
-
-                PostItemCreateScreen(
-                    navController = navController,
-                    onBackClick = {})
-            }
+            val navController = rememberNavController()
+            LoginNaviGraph(navController = navController, "T3SDNm5GqYfNSEb8KIqX2aCxFmc2")
         }
     }
 }
