@@ -147,11 +147,15 @@ fun EmailAuthScreen(
                 message = "이메일 인증을 먼저 완료해주세요."
                 return@Button
             }
-//            viewModel.uploadStudentIdImage(uri) { success, imageUrl ->
-//                sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
-//            }
-            sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
-            onNavigateToLogin()
+            viewModel.updatePassword(password) { success, error ->
+                if (success) {
+                    sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
+                    message = "비밀번호가 변경되고 승인 요청이 전송되었습니다."
+                    onNavigateToLogin()
+                } else {
+                    message = "비밀번호 변경 실패: $error"
+                }
+            }
         }) {
             Text("승인 요청")
         }

@@ -64,6 +64,17 @@ class EmailAuthViewModel : ViewModel() {
             .addOnFailureListener { onResult(false) }
     }
 
+    fun updatePassword(newPassword: String, onResult: (Boolean, String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            user.updatePassword(newPassword)
+                .addOnSuccessListener { onResult(true, null) }
+                .addOnFailureListener { e -> onResult(false, e.message) }
+        } else {
+            onResult(false, "로그인된 사용자가 없습니다.")
+        }
+    }
+
     // 기존 사용자 이메일+비번으로 로그인
     fun login(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
