@@ -7,9 +7,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+
 import com.example.campuspeer.model.Message
 import com.example.campuspeer.model.PostItem
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import java.text.NumberFormat
 import java.util.*
+
 
 @Composable
 fun ChatRoomScreen(
@@ -99,6 +100,7 @@ fun ChatRoomScreen(
             }
         )
     }
+
 }
 
 @Composable

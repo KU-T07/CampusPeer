@@ -118,7 +118,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         BottomNavigationBar(navController)
                 },
                 floatingActionButton = {
-                    if (currentRoute == Routes.PostItemListScreen)
+                    if (currentRoute == Routes.Home)
                         FloatingActionButton(onClick = {
                             navController.navigate(Routes.AddItem.route)
                         }) {
