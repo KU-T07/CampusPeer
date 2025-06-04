@@ -1,4 +1,4 @@
-package com.example.campuspeer.uicomponent
+package com.example.campuspeer.uicomponenti
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NavGraph
+
 import kotlinx.coroutines.launch
 
 @Composable

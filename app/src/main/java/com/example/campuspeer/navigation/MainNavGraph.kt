@@ -52,7 +52,9 @@ fun NavGraphBuilder.mainNavGraph(
             ChatRoomScreen(
                 roomId = roomId,
                 currentUserId = currentUserId,
-                partnerId = partnerId
+                partnerId = partnerId,
+                itemId = TODO(),
+                viewModel = TODO()
             )
         }
     }
