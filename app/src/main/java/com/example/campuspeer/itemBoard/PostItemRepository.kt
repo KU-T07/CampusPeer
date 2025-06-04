@@ -1,6 +1,7 @@
 package com.example.campuspeer.itemBoard
 
 import com.example.campuspeer.model.PostItem
+import com.example.campuspeer.model.toMap
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
@@ -10,6 +11,18 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class PostItemRepository {
     private val db = Firebase.firestore
+
+    fun addPost(
+        post: PostItem,
+        onSuccess: () -> Unit = {},
+        onFailure: (Exception) -> Unit = {}
+    ) {
+        val postMap = post.copy(timestamp = System.currentTimeMillis()).toMap()
+        db.collection("posts")
+            .add(postMap)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
 
     fun getPosts(): Flow<List<PostItem>> = callbackFlow {
         val subscription = db.collection("posts")

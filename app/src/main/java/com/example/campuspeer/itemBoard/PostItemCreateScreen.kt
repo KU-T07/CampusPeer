@@ -22,6 +22,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,15 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
+import com.example.campuspeer.model.Routes
 import com.example.campuspeer.util.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItemCreateScreen(
-    onBackClick: () -> Unit,
-    onPostSubmit: (PostItem) -> Unit
+    navController: NavController,
+    onBackClick: () -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
@@ -119,7 +123,7 @@ fun PostItemCreateScreen(
                 readOnly = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor(),
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true),
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
@@ -157,7 +161,19 @@ fun PostItemCreateScreen(
                     sellerId = "dummyUserId",
                     location = "건국대학교"
                 )
-                onPostSubmit(post)
+                val repository = PostItemRepository()
+                repository.addPost(post,
+                    onSuccess = {
+                        // 성공적으로 등록된 경우 뒤로 가기 등 처리
+                        navController.navigate(Routes.Home.route){
+                            popUpTo(Routes.Home.route) {inclusive = true}
+                        }
+                    },
+                    onFailure = {
+                        // 실패 알림 처리
+                    }
+                )
+
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),
@@ -171,8 +187,9 @@ fun PostItemCreateScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewPostItemCreateScreen() {
+    val navController = rememberNavController()
     PostItemCreateScreen(
-        onBackClick = {},
-        onPostSubmit = {}
+        navController = navController,
+        onBackClick = {}
     )
 }

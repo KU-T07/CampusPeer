@@ -29,10 +29,12 @@ fun NavGraphBuilder.mainNavGraph(
             HelpBoardScreen()
         }
 
+
         composable(Routes.AddItem.route) {
             PostItemCreateScreen(
-                onBackClick = TODO()
-            ) { }
+                navController = navController,  // 전달
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable("chat_list") {

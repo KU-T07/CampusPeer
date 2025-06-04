@@ -12,3 +12,15 @@ data class PostItem(
     val timestamp: Long = 0L,
     val location: String = ""
 )
+
+fun PostItem.toMap(): Map<String, Any> = mapOf(
+    "title" to title,
+    "price" to price,
+    "description" to description,
+    "category" to category.name,
+    "imageUrl" to imageUrl,
+    "status" to status,
+    "timestamp" to timestamp,
+    "sellerId" to sellerId,
+    "location" to location
+)

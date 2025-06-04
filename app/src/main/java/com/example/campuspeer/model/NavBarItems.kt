@@ -1,7 +1,6 @@
 package com.example.campuspeer.model
 
 import com.example.campuspeer.R
-import com.example.campuspeer.model.Routes
 
 object NavBarItems{
     val BarItems = listOf(
@@ -12,10 +11,10 @@ object NavBarItems{
             route = Routes.Home.route
         ),
         BarItem(
-            title = Routes.ItemBoard.route,
+            title = Routes.HelpBoard.route,
             selectIcon = R.drawable.baseline_groups_24,
             onSelectedIcon = R.drawable.outline_groups_24,
-            route = Routes.ItemBoard.route
+            route = Routes.HelpBoard.route
         ),
         BarItem(
             title = Routes.Chat.route,
