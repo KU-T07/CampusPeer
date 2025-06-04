@@ -1,7 +1,7 @@
 package com.example.campuspeer.itemBoard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +9,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,137 +33,153 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
+import com.example.campuspeer.model.Routes
 import com.example.campuspeer.util.BackButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItemCreateScreen(
-    onBackClick: () -> Unit,
-    onPostSubmit: (PostItem) -> Unit
+    navController: NavController,
+    onBackClick: () -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf("거래가능") }
-    var imageUrl by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             BackButton(onClick = onBackClick)
             Spacer(modifier = Modifier.width(8.dp))
             Text("게시글 등록", style = MaterialTheme.typography.titleLarge)
         }
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .size(140.dp)
+                .background(Color.Gray, shape = RoundedCornerShape(8.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Image Placeholder", tint = Color.White)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("제목") },
+            placeholder = { Text("제목") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = price,
             onValueChange = { price = it },
-            label = { Text("가격") },
+            placeholder = { Text("가격") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("설명") },
-            modifier = Modifier.fillMaxWidth()
+            placeholder = { Text("설명") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = category,
-            onValueChange = { category = it },
-            label = { Text("카테고리") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 상태 선택
-        Text("거래 상태", style = TextStyle(fontSize = 14.sp))
-        Row {
-            listOf("거래가능", "예약중", "거래완료").forEach {
-                val selected = it == status
-                Text(
-                    text = it,
-                    color = if (selected) Color.Blue else Color.Gray,
-                    modifier = Modifier
-                        .padding(end = 12.dp)
-                        .clickable { status = it }
-                )
-            }
-        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 이미지 업로드
-        Text("이미지 (URL)", style = TextStyle(fontSize = 14.sp))
-        OutlinedTextField(
-            value = imageUrl,
-            onValueChange = { imageUrl = it },
-            placeholder = { Text("https://...") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        val categoryList = Category.values().toList()
+        var expanded by remember { mutableStateOf(false) }
+        var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (imageUrl.isNotEmpty()) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = "Uploaded Image",
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = selectedCategory?.label ?: "카테고리 선택하기",
+                onValueChange = {},
+                readOnly = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .background(Color.LightGray)
+                    .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
             )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                categoryList.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category.label) },
+                        onClick = {
+                            selectedCategory = category
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // 등록 버튼
         Button(
             onClick = {
                 val post = PostItem(
                     title = title,
-                    price = price,
+                    price = price.toIntOrNull() ?: 0,
                     description = description,
-                    category = category,
-                    imageUrl = imageUrl,
-                    status = status,
+                    category = selectedCategory ?: Category.ETC,
+                    imageUrl = "",
+                    status = "거래가능",
                     timestamp = System.currentTimeMillis(),
-                    sellerId = "dummyUserId", // 실제 사용자 ID로 교체
+                    sellerId = "dummyUserId",
                     location = "건국대학교"
                 )
-                onPostSubmit(post)
+                val repository = PostItemRepository()
+                repository.addPost(post,
+                    onSuccess = {
+                        // 성공적으로 등록된 경우 뒤로 가기 등 처리
+                        navController.navigate(Routes.Home.route){
+                            popUpTo(Routes.Home.route) {inclusive = true}
+                        }
+                    },
+                    onFailure = {
+                        // 실패 알림 처리
+                    }
+                )
+
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text("등록")
+            Text("등록하기", color = Color.White)
         }
     }
 }
@@ -160,8 +187,9 @@ fun PostItemCreateScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewPostItemCreateScreen() {
+    val navController = rememberNavController()
     PostItemCreateScreen(
-        onBackClick = TODO(),
-        onPostSubmit = TODO()
+        navController = navController,
+        onBackClick = {}
     )
 }
