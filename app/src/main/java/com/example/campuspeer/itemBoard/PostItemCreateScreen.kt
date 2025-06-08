@@ -42,6 +42,7 @@ import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.util.BackButton
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostItemCreateScreen(
@@ -165,8 +166,8 @@ fun PostItemCreateScreen(
                 repository.addPost(post,
                     onSuccess = {
                         // 성공적으로 등록된 경우 뒤로 가기 등 처리
-                        navController.navigate(Routes.Main.route){
-                            popUpTo(Routes.Main.route) {inclusive = true}
+                        navController.navigate(Routes.PostItemList.route) {
+                            popUpTo(Routes.PostItemCreate.route) { inclusive = true }
                         }
                     },
                     onFailure = {

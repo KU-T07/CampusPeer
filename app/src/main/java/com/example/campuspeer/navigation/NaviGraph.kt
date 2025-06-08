@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.campuspeer.chat.ChatRoomListScreen
 import com.example.campuspeer.chat.ChatRoomScreen
 import com.example.campuspeer.helpBoard.HelpBoardScreen
+import com.example.campuspeer.itemBoard.LoadPostAndNavigateDetail
 import com.example.campuspeer.itemBoard.PostItemCreateScreen
 import com.example.campuspeer.itemBoard.PostItemListScreen
 import com.example.campuspeer.model.Category
@@ -18,12 +19,14 @@ import com.example.campuspeer.profile.ProfileScreen
 import com.example.campuspeer.uicomponent.LoginScreen
 import com.example.campuspeer.uicomponent.EmailAuthScreen
 import com.example.campuspeer.uicomponenti.MainScreen
+import com.example.campuspeer.itemBoard.PostItemDetailScreen as PostItemDetailScreen1
 
 
 @Composable
 fun NaviGraph(navController: NavHostController,
               startRoute: String,
-              currentUserId: String) {
+              currentUserId: String,
+              allPosts: List<PostItem> = emptyList()) {
     NavHost(navController = navController, startDestination = startRoute) {
 
         composable(Routes.Login.route) {
@@ -59,9 +62,10 @@ fun NaviGraph(navController: NavHostController,
             val defaultCategory = Category.ETC
 
             PostItemListScreen(
-                allPosts = dummyPosts,
-                selectedCategory = defaultCategory,
-                onItemClick = { /* 필요 시 상세 이동 로직 */ }
+                allPosts = allPosts,
+                selectedCategory = Category.ETC,
+                navController = navController
+                //onItemClick = { /* 필요 시 상세 이동 로직 */ }
             )
         }
 
@@ -87,10 +91,28 @@ fun NaviGraph(navController: NavHostController,
             HelpBoardScreen(/* 필요 시 인자 전달 */)
         }
 
-        // (선택)각 상세 화면이나 게시글 생성 화면도 필요한 경우 추가
+        // 게시물 등록 추가
         composable(Routes.PostItemCreate.route) {
-            //PostItemCreateScreen()
+            PostItemCreateScreen(
+                navController = navController,
+                onBackClick = { navController.popBackStack() }
+            )
         }
-        // …
+
+        // 디테일로 이동 추가
+        composable(
+            route = "PostItemDetailScreen/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getString("postId") ?: return@composable
+            val post = allPosts.find { it.id == postId }
+
+            LoadPostAndNavigateDetail(
+                postId = postId,
+                post = post,
+                navController = navController
+            )
+        }
+
     }
 }

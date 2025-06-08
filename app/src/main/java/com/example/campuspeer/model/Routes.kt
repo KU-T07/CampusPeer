@@ -4,7 +4,9 @@ sealed class Routes(val route: String, val isRoot: Boolean = true) {
     object Register : Routes("RegisterScreen")
     object Main : Routes("MainScreen")
     object PostItemList : Routes("PostItemListScreen")
-    object PostItemDetail : Routes("PostItemDetailScreen")
+    object PostItemDetail : Routes("PostItemDetailScreen/{postId}", isRoot = false) {
+        fun routeWithId(postId: String): String = "PostItemDetailScreen/$postId"
+    }
     object HelpBoard : Routes("HelpBoardScreen")
     object PostItemCreate : Routes("PostItemCreateScreen", isRoot = false)
     object Chat : Routes("chat_list")

@@ -9,6 +9,7 @@ import com.example.campuspeer.chat.ChatRoomScreen
 import com.example.campuspeer.helpBoard.HelpBoardScreen
 import com.example.campuspeer.itemBoard.PostItemCreateScreen
 import com.example.campuspeer.itemBoard.PostItemListScreen
+import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.Routes
 
 fun NavGraphBuilder.mainNavGraph(
@@ -21,9 +22,10 @@ fun NavGraphBuilder.mainNavGraph(
     ) {
         composable(Routes.Main.route) {
             PostItemListScreen(
-                allPosts = TODO(),
-                selectedCategory = TODO()
-            ) { }
+                allPosts = emptyList(), // 또는 ViewModel에서 받아온 데이터
+                selectedCategory = Category.ETC,
+                navController = navController // 🔥 이거 꼭 추가!
+            )
         }
         composable(Routes.HelpBoard.route) {
             HelpBoardScreen()

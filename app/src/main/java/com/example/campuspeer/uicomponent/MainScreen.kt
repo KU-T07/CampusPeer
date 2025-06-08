@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.LocalEmailAuthViewModelOwner
+import com.example.campuspeer.itemBoard.PostItemViewModel
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NaviGraph
@@ -56,6 +58,9 @@ val LocalNavGraphViewModelStoreOwner =
 fun MainScreen(modifier: Modifier = Modifier) {
     val navStoreOwner = rememberViewModelStoreOwner()
     val navController = rememberNavController()
+
+    val postViewModel: PostItemViewModel = viewModel()
+    val posts by postViewModel.posts.collectAsState()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute by remember(backStackEntry) {
@@ -135,7 +140,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
                    NaviGraph(
                        navController = navController,
                        currentUserId = "dummyUserId",
-                       startRoute = Routes.PostItemList.route
+                       startRoute = Routes.PostItemList.route,
+                       allPosts = posts
                    )
                     Text(text = viewModel.getCurrentUserId().toString())
                 }

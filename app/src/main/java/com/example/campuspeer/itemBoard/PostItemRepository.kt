@@ -1,5 +1,6 @@
 package com.example.campuspeer.itemBoard
 
+import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.toMap
 import com.google.firebase.Firebase
@@ -28,9 +29,25 @@ class PostItemRepository {
         val subscription = db.collection("posts")
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, _ ->
-                val posts = snapshot?.documents?.mapNotNull {
-                    it.toObject(PostItem::class.java)?.copy(id = it.id)
-                } ?: emptyList<PostItem>()
+                val posts = snapshot?.documents?.mapNotNull { doc ->
+                    val categoryStr = doc.getString("category") ?: return@mapNotNull null
+                    val category = Category.entries.firstOrNull {
+                        it.name.equals(categoryStr, ignoreCase = true)
+                    } ?: return@mapNotNull null
+
+                    PostItem(
+                        id = doc.id,
+                        title = doc.getString("title") ?: "",
+                        description = doc.getString("description") ?: "",
+                        price = doc.getLong("price")?.toInt() ?: 0,
+                        location = doc.getString("location") ?: "",
+                        sellerId = doc.getString("sellerId") ?: "",
+                        timestamp = doc.getLong("timestamp") ?: 0L,
+                        imageUrl = doc.getString("imageUrl") ?: "",
+                        category = category,
+                        status = doc.getString("status") ?: ""
+                    )
+                } ?: emptyList()
                 trySend(posts)
             }
         awaitClose { subscription.remove() }
