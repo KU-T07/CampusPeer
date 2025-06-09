@@ -1,7 +1,7 @@
 package com.example.campuspeer.model
 sealed class Routes(val route: String, val isRoot: Boolean = true) {
     object Login : Routes("LoginScreen", false)
-    object Register : Routes("RegisterScreen")
+    object Register : Routes("RegisterScreen", false)
     object Main : Routes("MainScreen")
     object PostItemList : Routes("PostItemListScreen")
     object PostItemDetail : Routes("PostItemDetailScreen/{postId}", isRoot = false) {
