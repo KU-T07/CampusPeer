@@ -1,38 +1,52 @@
 package com.example.campuspeer.itemBoard
 
+import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
+import com.example.campuspeer.model.Routes
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun PostItemListScreen(
     allPosts: List<PostItem>,
     selectedCategory: Category,
-    onItemClick: (PostItem) -> Unit
+    navController: NavController// 기본값 추가
 ) {
-    /*Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "contacts",
-            tint = Color.Blue,
-            modifier = Modifier
-                .size(150.dp)
-                .align(Alignment.Center)
-        )
-    }*/
-    val filteredPosts = allPosts.filter { it.category == selectedCategory }
+    val filteredPosts = allPosts
 
-    // 리스트 표시
-    PostItemList(
-        posts = filteredPosts,
-        { post ->
-            // 게시글 상세로 이동 등 처리
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        if (filteredPosts.isEmpty()) {
+            CircularProgressIndicator()
+        } else {
+            PostItemList(posts = filteredPosts, onClick = { post ->
+                navController.navigate(Routes.PostItemDetail.routeWithId(post.id))
+            })
         }
+    }
 
-    )
+    Log.d("PostItemListScreen", "전체 post 수: ${allPosts.size}")
+}
 
-
-
+@Composable
+fun LoadPostAndNavigateDetail(
+    postId: String,
+    post: PostItem?,
+    navController: NavController
+) {
+    post?.let {
+        PostItemDetailScreen(
+            post = post,
+            onBackClick = { navController.popBackStack() },
+            onChatClick = { /* 채팅으로 이동 처리 */ }
+        )
+    }
 }

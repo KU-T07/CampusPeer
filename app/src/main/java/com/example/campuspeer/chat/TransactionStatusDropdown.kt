@@ -1,12 +1,12 @@
 package com.example.campuspeer.chat
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,27 +25,33 @@ fun TransactionStatusDropdown(
 
     val options = listOf("거래 진행", "거래 완료", "거래 취소")
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember {mutableStateOf(currentStatus)}
+    var selectedText by remember { mutableStateOf(currentStatus) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = {expanded = !expanded}
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier
+            .fillMaxWidth(0.5f) // 너비를 반으로 제한
     ) {
         TextField(
             value = selectedText,
             onValueChange = {},
             readOnly = true,
-            label = { Text("거래 상태")},
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded)},
-            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true)
+            label = { Text("거래 상태") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            singleLine = true
         )
+
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = {expanded = false}
+            onDismissRequest = { expanded = false }
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = {Text(option)},
+                    text = { Text(option) },
                     onClick = {
                         selectedText = option
                         expanded = false

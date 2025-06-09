@@ -9,6 +9,7 @@ import com.example.campuspeer.chat.ChatRoomScreen
 import com.example.campuspeer.helpBoard.HelpBoardScreen
 import com.example.campuspeer.itemBoard.PostItemCreateScreen
 import com.example.campuspeer.itemBoard.PostItemListScreen
+import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.Routes
 
 fun NavGraphBuilder.mainNavGraph(
@@ -16,21 +17,22 @@ fun NavGraphBuilder.mainNavGraph(
     currentUserId: String
 ) {
     navigation(
-        startDestination = Routes.Home.route,
+        startDestination = Routes.Main.route,
         route = Routes.Main.route
     ) {
-        composable(Routes.Home.route) {
+        composable(Routes.Main.route) {
             PostItemListScreen(
-                allPosts = TODO(),
-                selectedCategory = TODO()
-            ) { }
+                allPosts = emptyList(), // 또는 ViewModel에서 받아온 데이터
+                selectedCategory = Category.ETC,
+                navController = navController // 🔥 이거 꼭 추가!
+            )
         }
         composable(Routes.HelpBoard.route) {
             HelpBoardScreen()
         }
 
 
-        composable(Routes.AddItem.route) {
+        composable(Routes.PostItemCreate.route) {
             PostItemCreateScreen(
                 navController = navController,  // 전달
                 onBackClick = { navController.popBackStack() }
@@ -52,7 +54,9 @@ fun NavGraphBuilder.mainNavGraph(
             ChatRoomScreen(
                 roomId = roomId,
                 currentUserId = currentUserId,
-                partnerId = partnerId
+                partnerId = partnerId,
+                itemId = TODO(),
+                viewModel = TODO()
             )
         }
     }

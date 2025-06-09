@@ -23,16 +23,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.campuspeer.LocalEmailAuthViewModelOwner
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigateToWelcome: (String) -> Unit,
+    onNavigateToMain: (String) -> Unit,
     onRegisterNavigate: () -> Unit, // ✅ 추가된 부분
-    viewModel: EmailAuthViewModel = viewModel()
 ) {
     val context = LocalContext.current
+
+    val owner: ViewModelStoreOwner = LocalEmailAuthViewModelOwner.current
+    val viewModel: EmailAuthViewModel = viewModel(viewModelStoreOwner = owner)
+
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -62,7 +68,7 @@ fun LoginScreen(
                     if (success) {
                         print("성공")
                         // 로그인 성공 시 화면 이동
-                        onNavigateToWelcome(viewModel.getCurrentUserId() ?: "") // userId가 필요 없다면 이대로
+                        onNavigateToMain(viewModel.getCurrentUserId() ?: "") // userId가 필요 없다면 이대로
                     } else {
                         Toast.makeText(context, error ?: "로그인 실패", Toast.LENGTH_SHORT).show()
                     }
