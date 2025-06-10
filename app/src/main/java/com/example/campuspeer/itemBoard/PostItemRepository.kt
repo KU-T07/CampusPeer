@@ -6,6 +6,7 @@ import com.example.campuspeer.model.toMap
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -35,6 +36,15 @@ class PostItemRepository {
                         it.name.equals(categoryStr, ignoreCase = true)
                     } ?: return@mapNotNull null
 
+
+                    val latlngMap = doc.get("latlng") as? Map<*, *>
+                    val latlng = latlngMap?.let {
+                        val lat = it["latitude"] as? Double
+                        val lng = it["longitude"] as? Double
+                        if (lat != null && lng != null) LatLng(lat, lng)
+                        else LatLng(37.54168, 127.07867)
+                    } ?: LatLng(37.54168, 127.07867)
+
                     PostItem(
                         id = doc.id,
                         title = doc.getString("title") ?: "",
@@ -45,7 +55,8 @@ class PostItemRepository {
                         timestamp = doc.getLong("timestamp") ?: 0L,
                         imageUrl = doc.getString("imageUrl") ?: "",
                         category = category,
-                        status = doc.getString("status") ?: ""
+                        status = doc.getString("status") ?: "",
+                        latlng = latlng,
                     )
                 } ?: emptyList()
                 trySend(posts)

@@ -44,7 +44,7 @@ fun LoadPostAndNavigateDetail(
 ) {
     post?.let {
         PostItemDetailScreen(
-            post = post,
+            initialPost = post,
             onBackClick = { navController.popBackStack() },
             onChatClick = { /* 채팅으로 이동 처리 */ }
         )

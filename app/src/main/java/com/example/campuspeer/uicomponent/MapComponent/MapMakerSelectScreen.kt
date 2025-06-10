@@ -14,11 +14,17 @@ import com.naver.maps.map.compose.*
 @Composable
 fun MapMarkerSelectScreen(
     modifier: Modifier = Modifier,
-    defaultLocations: List<Pair<String, LatLng>> = emptyList(),
     onLocationSelected: (LatLng, String?) -> Unit
-) {
+)
+{
     val context = LocalContext.current
-
+    val defaultLocations = listOf(
+        "황소상" to LatLng(37.54312, 127.07618),
+        "새천년관 앞" to LatLng(37.54313, 127.07739),
+        "공학관 앞" to LatLng(37.54168, 127.07867),
+        "레이크홀 편의점" to LatLng(37.53937, 127.07706),
+        "도서관" to LatLng(37.54160, 127.07356)
+    )
     // 유저가 마지막에 선택한 위치: LatLng + (정해진 장소 이름 or null)
     var selectedLocation by remember { mutableStateOf<Pair<LatLng, String?>?>(null) }
 
@@ -56,7 +62,6 @@ fun MapMarkerSelectScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
 
 
@@ -82,7 +87,9 @@ fun MapMarkerSelectScreen(
                 // 주요 위치 마커 표시 (예: "정문", "학생회관")
                 defaultLocations.forEach { (name, position) ->
                     val markerState = rememberUpdatedState(position) // marker 갱신용
-                    Marker(
+                    if(name == null)
+                    {
+                        Marker(
                         state = MarkerState(position = markerState.value),
                         captionText = name,
                         onClick = {
@@ -90,6 +97,9 @@ fun MapMarkerSelectScreen(
                             true
                         }
                     )
+
+                    }
+
                 }
 
                 // 사용자가 선택한 마커 1개만 표시

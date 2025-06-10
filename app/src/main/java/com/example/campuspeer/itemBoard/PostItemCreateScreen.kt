@@ -1,5 +1,6 @@
 package com.example.campuspeer.itemBoard
 
+import MapMarkerPopupDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +42,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
+import com.example.campuspeer.uicomponents.MapComponent.MapMarkerSelectScreen
 import com.example.campuspeer.util.BackButton
+import com.naver.maps.geometry.LatLng
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,6 +57,9 @@ fun PostItemCreateScreen(
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
+    var showMapDialog by remember { mutableStateOf(false) }
+    var selectedLatLng by remember { mutableStateOf<LatLng?>(null) }
+    var selectedName by remember { mutableStateOf("") }
 
 
     Column(
@@ -147,6 +154,31 @@ fun PostItemCreateScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        selectedLatLng?.let {
+            Text(
+                text = "위도: %.5f, 경도: %.5f".format(it.latitude, it.longitude),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp)
+            )
+        }
+
+        // 위치 선택 버튼 클릭 시
+        TextButton(onClick = { showMapDialog = true }) {
+            Text("위치 선택")
+        }
+
+        if (showMapDialog) {
+            MapMarkerPopupDialog(
+                onDismiss = { showMapDialog = false },
+                onLocationSelected = { latLng, name ->
+                    selectedLatLng = latLng
+                    selectedName = name.orEmpty()
+                }
+            )
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
@@ -160,7 +192,8 @@ fun PostItemCreateScreen(
                     status = "거래가능",
                     timestamp = System.currentTimeMillis(),
                     sellerId = "dummyUserId",
-                    location = "건국대학교"
+                    location = "건국대학교",
+                    latlng = selectedLatLng ?: LatLng(37.54168, 127.07867)
                 )
                 val repository = PostItemRepository()
                 repository.addPost(post,
