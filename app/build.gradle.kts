@@ -13,6 +13,11 @@ plugins {
 android {
     namespace = "com.example.campuspeer"
     compileSdk = 35
+    packaging {
+        resources {
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
 
     defaultConfig {
         applicationId = "com.example.campuspeer"
@@ -37,11 +42,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 secrets{
@@ -70,6 +77,8 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.naver.map.compose)
     implementation(libs.play.services.maps)
+    implementation(libs.firebase.storage)
+    implementation(libs.identity.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,16 +34,23 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.campuspeer.R
 import com.example.campuspeer.model.PostItem
+import com.example.campuspeer.uicomponents.MapComponent.MapMarkerSelectScreen
 import com.example.campuspeer.util.BackButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.example.campuspeer.uicomponents.MapComponent.MapMarkerDisplayScreen
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
 
 @Composable
 fun PostItemDetailScreen(
-    post: PostItem,
+    initialPost: PostItem,
     onBackClick: () -> Unit,
     onChatClick: () -> Unit
 ) {
     val navController = rememberNavController()
-
+    var post by remember { mutableStateOf(initialPost) }
     /*Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -67,10 +76,6 @@ fun PostItemDetailScreen(
                     .background(Color(0xFFF0EEF5))
             )
 
-            BackButton(
-                onClick = onBackClick,
-                modifier = Modifier.padding(8.dp)
-            )
         }
 
         // 사용자 정보
@@ -122,8 +127,14 @@ fun PostItemDetailScreen(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-
+        Box(modifier = Modifier
+            .weight(2f)
+            .fillMaxWidth()) {
+            MapMarkerDisplayScreen(
+                location = post.latlng,
+                locationName = post.location
+            )
+        }
         // 채팅하기 버튼
         Button(
             onClick = onChatClick,
@@ -155,7 +166,7 @@ fun PostItemDetailScreenPreview() {
     )
 
     PostItemDetailScreen(
-        post = dummyPost,
+        initialPost = dummyPost,
         onBackClick = {},
         onChatClick = {}
     )
