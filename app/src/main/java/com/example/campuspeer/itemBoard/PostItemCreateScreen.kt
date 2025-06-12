@@ -1,51 +1,36 @@
 package com.example.campuspeer.itemBoard
 
 import MapMarkerPopupDialog
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
-import com.example.campuspeer.uicomponents.MapComponent.MapMarkerSelectScreen
 import com.example.campuspeer.util.BackButton
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.naver.maps.geometry.LatLng
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +45,15 @@ fun PostItemCreateScreen(
     var showMapDialog by remember { mutableStateOf(false) }
     var selectedLatLng by remember { mutableStateOf<LatLng?>(null) }
     var selectedName by remember { mutableStateOf("") }
-
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
+    val context = LocalContext.current
+    val storageRef = Firebase.storage.reference
+    val firestore = Firebase.firestore
 
     Column(
         modifier = Modifier
@@ -78,14 +71,23 @@ fun PostItemCreateScreen(
         }
         Spacer(modifier = Modifier.height(12.dp))
 
-        Box(
-            modifier = Modifier
-                .size(140.dp)
-                .background(Color.Gray, shape = RoundedCornerShape(8.dp)),
-            contentAlignment = Alignment.Center
+        Button(
+            onClick = { imagePickerLauncher.launch("image/*") },
+            modifier = Modifier.size(140.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Image Placeholder", tint = Color.White)
+            if (imageUri != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(imageUri),
+                    contentDescription = "선택된 이미지",
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Icon(Icons.Default.Add, contentDescription = "이미지 선택", tint = Color.White)
+            }
         }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
@@ -110,15 +112,12 @@ fun PostItemCreateScreen(
             value = description,
             onValueChange = { description = it },
             placeholder = { Text("설명") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp)
+            modifier = Modifier.fillMaxWidth().height(120.dp)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         val categoryList = Category.values().toList()
-        var expanded by remember { mutableStateOf(false) }
         var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
         ExposedDropdownMenuBox(
@@ -129,9 +128,7 @@ fun PostItemCreateScreen(
                 value = selectedCategory?.label ?: "카테고리 선택하기",
                 onValueChange = {},
                 readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true),
+                modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                 },
@@ -164,7 +161,6 @@ fun PostItemCreateScreen(
             )
         }
 
-        // 위치 선택 버튼 클릭 시
         TextButton(onClick = { showMapDialog = true }) {
             Text("위치 선택")
         }
@@ -183,31 +179,64 @@ fun PostItemCreateScreen(
 
         Button(
             onClick = {
-                val post = PostItem(
-                    title = title,
-                    price = price.toIntOrNull() ?: 0,
-                    description = description,
-                    category = selectedCategory ?: Category.ETC,
-                    imageUrl = "",
-                    status = "거래가능",
-                    timestamp = System.currentTimeMillis(),
-                    sellerId = "dummyUserId",
-                    location = "건국대학교",
-                    latlng = selectedLatLng ?: LatLng(37.54168, 127.07867)
-                )
-                val repository = PostItemRepository()
-                repository.addPost(post,
-                    onSuccess = {
-                        // 성공적으로 등록된 경우 뒤로 가기 등 처리
-                        navController.navigate(Routes.PostItemList.route) {
-                            popUpTo(Routes.PostItemCreate.route) { inclusive = true }
-                        }
-                    },
-                    onFailure = {
-                        // 실패 알림 처리
-                    }
-                )
+                val postId = firestore.collection("posts").document().id
 
+                val uploadAndCreatePost = {
+                    val post = PostItem(
+                        id = postId,
+                        title = title,
+                        price = price.toIntOrNull() ?: 0,
+                        description = description,
+                        category = selectedCategory ?: Category.ETC,
+                        imageUrl = "",
+                        status = "거래가능",
+                        timestamp = System.currentTimeMillis(),
+                        sellerId = Firebase.auth.currentUser?.uid ?: "unknown",
+                        location = selectedName,
+                        latlng = selectedLatLng ?: LatLng(37.54168, 127.07867)
+                    )
+
+                    if (imageUri != null) {
+                        val filename = "images/${postId}.jpg"
+                        val imageRef = storageRef.child(filename)
+                        imageRef.putFile(imageUri!!)
+                            .addOnSuccessListener {
+                                imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                                    val finalPost = post.copy(imageUrl = downloadUrl.toString())
+                                    val repository = PostItemRepository()
+                                    repository.addPost(
+                                        finalPost,
+                                        onSuccess = {
+                                            navController.navigate(Routes.PostItemList.route) {
+                                                popUpTo(Routes.PostItemCreate.route) { inclusive = true }
+                                            }
+                                        },
+                                        onFailure = {
+                                            Toast.makeText(context, "등록 실패", Toast.LENGTH_SHORT).show()
+                                        }
+                                    )
+                                }
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "이미지 업로드 실패", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        val repository = PostItemRepository()
+                        repository.addPost(
+                            post,
+                            onSuccess = {
+                                navController.navigate(Routes.PostItemList.route) {
+                                    popUpTo(Routes.PostItemCreate.route) { inclusive = true }
+                                }
+                            },
+                            onFailure = {
+                                Toast.makeText(context, "등록 실패", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                    }
+                }
+
+                uploadAndCreatePost()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),

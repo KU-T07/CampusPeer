@@ -14,6 +14,8 @@ naverMapCompose = "1.8.0"
 secretsGradlePlugin = "2.0.1"
 playServicesMaps = "19.2.0"
 firebaseDatabase = "21.0.0"
+firebaseStorage = "21.0.2"
+identityJvm = "202411.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -35,6 +37,8 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 naver-map-compose = { group = "io.github.fornewid", name = "naver-map-compose", version.ref = "naverMapCompose" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
 
 
 [plugins]
