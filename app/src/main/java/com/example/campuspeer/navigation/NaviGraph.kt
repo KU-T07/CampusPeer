@@ -83,6 +83,15 @@ fun NaviGraph(navController: NavHostController,
             )
         }
 
+        composable(Routes.Chat.route) {
+            ChatRoomListScreen(
+                currentUserId = Firebase.auth.currentUser!!.uid,
+                onNavigateToChat = { roomId, partnerId, itemId ->
+                    navController.navigate(Routes.ChatRoom.create(roomId, partnerId, itemId))
+                }
+            )
+        }
+
         composable(
             route = Routes.ChatRoom.route,
             arguments = listOf(
@@ -90,15 +99,12 @@ fun NaviGraph(navController: NavHostController,
                 navArgument("partnerId") { type = NavType.StringType },
                 navArgument("itemId")    { type = NavType.StringType },
             )
-        ) { backStack ->
-            val roomId    = backStack.arguments!!.getString("roomId")!!
-            val partnerId = backStack.arguments!!.getString("partnerId")!!
-            val itemId    = backStack.arguments!!.getString("itemId")!!
+        ) { backStackEntry ->
             ChatRoomScreen(
-                roomId        = roomId,
+                roomId        = backStackEntry.arguments!!.getString("roomId")!!,
                 currentUserId = Firebase.auth.currentUser!!.uid,
-                partnerId     = partnerId,
-                itemId        = itemId
+                partnerId     = backStackEntry.arguments!!.getString("partnerId")!!,
+                itemId        = backStackEntry.arguments!!.getString("itemId")!!
             )
         }
 
@@ -117,16 +123,6 @@ fun NaviGraph(navController: NavHostController,
             PostItemCreateScreen(
                 navController = navController,
                 onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        // Routes.Chat.route 값은 "chat_list"
-        composable(Routes.Chat.route) {
-            ChatRoomListScreen(
-                currentUserId = currentUserId,
-                onNavigateToChat = { roomId, partnerId, itemId ->
-                    navController.navigate(Routes.ChatRoom.create(roomId, partnerId, itemId))
-                }
             )
         }
 
