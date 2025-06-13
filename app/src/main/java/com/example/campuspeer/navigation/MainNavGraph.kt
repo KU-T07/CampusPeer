@@ -42,11 +42,12 @@ fun NavGraphBuilder.mainNavGraph(
         composable("chat_list") {
             ChatRoomListScreen(
                 currentUserId = currentUserId,
-                onNavigateToChat = { roomId, partnerId ->
-                    navController.navigate("chat_room/$roomId/$partnerId")
+                onNavigateToChat = { roomId, partnerId, itemId ->
+                    navController.navigate(Routes.ChatRoom.create(roomId, partnerId, itemId))
                 }
             )
         }
+
         composable("chat_room/{roomId}/{partnerId}") { backStackEntry ->
             val roomId = backStackEntry.arguments?.getString("roomId") ?: return@composable
             val partnerId = backStackEntry.arguments?.getString("partnerId") ?: return@composable

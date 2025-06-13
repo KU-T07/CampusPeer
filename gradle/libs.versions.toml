@@ -16,6 +16,10 @@ playServicesMaps = "19.2.0"
 firebaseDatabase = "21.0.0"
 firebaseStorage = "21.0.2"
 identityJvm = "202411.1"
+firebaseStorageKtx = "21.0.2"
+material3 = "1.4.0-alpha15"
+material = "1.9.0-alpha04"
+materialIconsExtended = "1.7.8"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -39,6 +43,10 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-material = { group = "androidx.compose.material", name = "material", version.ref = "material" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 
 
 [plugins]

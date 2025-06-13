@@ -1,4 +1,4 @@
-package com.example.campuspeer.itemBoard
+package com.example.campuspeer.uicomponent
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.campuspeer.model.Category // Category enum 임포트
+import com.example.campuspeer.model.Category
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

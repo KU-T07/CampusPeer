@@ -12,10 +12,10 @@ sealed class Routes(val route: String, val isRoot: Boolean = true) {
     object Chat : Routes("chat_list")
     object Profile : Routes("ProfileScreen")
 
-    object ChatRoom : Routes("chat_room/{roomId}/{partnerId}", isRoot = false) {
-        fun routeWithArgs(roomId: String, partnerId: String): String {
-            return "chat_room/$roomId/$partnerId"
-        }
+    object ChatRoom :
+        Routes("chat_room/{roomId}/{partnerId}/{itemId}", isRoot = false) {
+        fun create(roomId: String, partnerId: String, itemId: String) =
+            "chat_room/$roomId/$partnerId/$itemId"
     }
 
 

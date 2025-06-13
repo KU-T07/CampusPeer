@@ -1,6 +1,9 @@
 package com.example.campuspeer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,14 +15,16 @@ import com.example.campuspeer.helpBoard.HelpBoardScreen
 import com.example.campuspeer.itemBoard.LoadPostAndNavigateDetail
 import com.example.campuspeer.itemBoard.PostItemCreateScreen
 import com.example.campuspeer.itemBoard.PostItemListScreen
+import com.example.campuspeer.itemBoard.PostItemViewModel
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.profile.ProfileScreen
-import com.example.campuspeer.uicomponent.LoginScreen
 import com.example.campuspeer.uicomponent.EmailAuthScreen
+import com.example.campuspeer.uicomponent.LoginScreen
 import com.example.campuspeer.uicomponenti.MainScreen
-import com.example.campuspeer.itemBoard.PostItemDetailScreen as PostItemDetailScreen1
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 @Composable
@@ -69,18 +74,25 @@ fun NaviGraph(navController: NavHostController,
             )
         }
 
-        composable(Routes.Chat.route) {
-            val user = if (currentUserId.isNotEmpty()) currentUserId else "dummyUser"
-
-            // ② onNavigateToChat: roomId와 partnerId를 받아서 ChatRoom 경로로 네비게이트
-            val onNavigateToChat: (String, String) -> Unit = { roomId, partnerId ->
-                navController.navigate(Routes.ChatRoom.routeWithArgs(roomId, partnerId))
-            }
-            ChatRoomListScreen(
-                currentUserId = user,
-                onNavigateToChat = onNavigateToChat
+        composable(
+            route = Routes.ChatRoom.route,
+            arguments = listOf(
+                navArgument("roomId")    { type = NavType.StringType },
+                navArgument("partnerId") { type = NavType.StringType },
+                navArgument("itemId")    { type = NavType.StringType },
+            )
+        ) { backStack ->
+            val roomId    = backStack.arguments!!.getString("roomId")!!
+            val partnerId = backStack.arguments!!.getString("partnerId")!!
+            val itemId    = backStack.arguments!!.getString("itemId")!!
+            ChatRoomScreen(
+                roomId        = roomId,
+                currentUserId = Firebase.auth.currentUser!!.uid,
+                partnerId     = partnerId,
+                itemId        = itemId
             )
         }
+
 
         composable(Routes.Profile.route) {
             ProfileScreen(/* 필요 시 userId 전달 */)
@@ -99,20 +111,37 @@ fun NaviGraph(navController: NavHostController,
             )
         }
 
-        // 디테일로 이동 추가
-        composable(
-            route = "PostItemDetailScreen/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getString("postId") ?: return@composable
-            val post = allPosts.find { it.id == postId }
-
-            LoadPostAndNavigateDetail(
-                postId = postId,
-                post = post,
-                navController = navController
+        // Routes.Chat.route 값은 "chat_list"
+        composable(Routes.Chat.route) {
+            ChatRoomListScreen(
+                currentUserId = currentUserId,
+                onNavigateToChat = { roomId, partnerId, itemId ->
+                    navController.navigate(Routes.ChatRoom.create(roomId, partnerId, itemId))
+                }
             )
         }
+
+
+        // 디테일로 이동 추가
+        // 1) NavGraph.kt 에서
+        composable(
+            route = Routes.PostItemDetail.route,
+            arguments = listOf(navArgument("postId"){ type = NavType.StringType })
+        ) { backStack ->
+            val postId = backStack.arguments!!.getString("postId")!!
+            val viewModel: PostItemViewModel = viewModel()
+            val posts by viewModel.posts.collectAsState()
+            val post = posts.firstOrNull { it.id == postId }
+
+            LoadPostAndNavigateDetail(
+                postId        = postId,
+                post          = post,
+                navController = navController    // NavHostController 여기를 그대로 넘겨줌
+            )
+        }
+
+
+
 
     }
 }

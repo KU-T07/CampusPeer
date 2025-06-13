@@ -21,46 +21,42 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.campuspeer.R
+import com.example.campuspeer.model.ChatRoom
 import com.example.campuspeer.model.PostItem
-import com.example.campuspeer.uicomponents.MapComponent.MapMarkerSelectScreen
-import com.example.campuspeer.util.BackButton
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import com.example.campuspeer.model.Routes
 import com.example.campuspeer.uicomponents.MapComponent.MapMarkerDisplayScreen
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 
 @Composable
 fun PostItemDetailScreen(
+    navController: NavHostController,
     initialPost: PostItem,
-    onBackClick: () -> Unit,
-    onChatClick: () -> Unit
+    onBackClick: () -> Unit
 ) {
-    val navController = rememberNavController()
+    //val navController = rememberNavController()
     var post by remember { mutableStateOf(initialPost) }
-    /*Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = "contacts",
-            tint = Color.Blue,
-            modifier = Modifier
-                .size(150.dp)
-                .align(Alignment.Center)
-        )
-    }*/
+    val currentUserId = Firebase.auth.currentUser?.uid ?: return
+    val sellerId      = post.sellerId
+    val buyerId       = currentUserId
+    val itemId        = post.id
+    val roomsRef      = Firebase.firestore.collection("chatRooms")
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         // 상단 이미지 & 뒤로가기
@@ -135,7 +131,34 @@ fun PostItemDetailScreen(
         }
         // 채팅하기 버튼
         Button(
-            onClick = onChatClick,
+            onClick = {
+                // 1) 같은 (itemId, sellerId, buyerId) 방 검색
+                roomsRef
+                    .whereEqualTo("itemId", itemId)
+                    .whereEqualTo("user1Id", sellerId)
+                    .whereEqualTo("user2Id", buyerId)
+                    .get()
+                    .addOnSuccessListener { snap ->
+                        val roomId = if (!snap.isEmpty) {
+                            // 기존 방
+                            snap.documents[0].id
+                        } else {
+                            // 새 방 생성
+                            val ref = roomsRef.document()
+                            val room = ChatRoom(
+                                id           = ref.id,
+                                itemId       = itemId,
+                                user1Id      = sellerId,
+                                user2Id      = buyerId,
+                                participants = listOf(sellerId, buyerId)
+                            )
+                            ref.set(room)
+                            ref.id
+                        }
+                        // 2) roomId, partnerId(seller), itemId 넘겨서 이동
+                        navController.navigate(Routes.ChatRoom.create(roomId, sellerId, itemId))
+                    }
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
@@ -145,27 +168,4 @@ fun PostItemDetailScreen(
             Text("채팅하기")
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PostItemDetailScreenPreview() {
-    val dummyPost = PostItem(
-        id = "1",
-        title = "애플펜슬 2세대",
-        price = 85000,
-        description = "거의 새상품 수준으로 깨끗합니다. 애플펜슬 2세대입니다. 직거래만 가능해요!",
-        imageUrl = "https://via.placeholder.com/300",
-        category = com.example.campuspeer.model.Category.ELECTRONICS,
-        status = "예약중",
-        sellerId = "dummyUserId",
-        timestamp = System.currentTimeMillis(),
-        location = "건국대학교"
-    )
-
-    PostItemDetailScreen(
-        initialPost = dummyPost,
-        onBackClick = {},
-        onChatClick = {}
-    )
 }

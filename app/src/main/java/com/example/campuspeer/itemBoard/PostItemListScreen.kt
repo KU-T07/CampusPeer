@@ -1,19 +1,17 @@
 package com.example.campuspeer.itemBoard
 
 import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun PostItemListScreen(
@@ -40,13 +38,13 @@ fun PostItemListScreen(
 fun LoadPostAndNavigateDetail(
     postId: String,
     post: PostItem?,
-    navController: NavController
+    navController: NavHostController    // ① NavHostController 로 변경
 ) {
-    post?.let {
+    post?.let { selectedPost ->
         PostItemDetailScreen(
-            initialPost = post,
-            onBackClick = { navController.popBackStack() },
-            onChatClick = { /* 채팅으로 이동 처리 */ }
+            navController = navController,   // ② 빠진 파라미터 추가
+            initialPost   = selectedPost,
+            onBackClick   = { navController.popBackStack() }
         )
     }
 }

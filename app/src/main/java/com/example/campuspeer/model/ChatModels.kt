@@ -9,6 +9,8 @@ data class Message(
 
 data class ChatRoom(
     val id: String = "",
-    val user1Id: String ="",
-    val user2Id: String = ""
+    val itemId: String = "",
+    val user1Id: String ="", //판매자
+    val user2Id: String = "", //구매자
+    val participants: List<String> = emptyList()
 )
