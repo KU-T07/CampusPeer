@@ -7,6 +7,7 @@ enum class Category(val label: String) {
     BEAUTY("뷰티"),
     SPORTS("스포츠"),
     FURNITURE("가구"),
+    HELP("도움요청"),
     ETC("기타");
 
     override fun toString(): String = label
