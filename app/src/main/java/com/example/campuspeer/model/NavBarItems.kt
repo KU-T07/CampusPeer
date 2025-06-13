@@ -20,7 +20,7 @@ object NavBarItems{
             title = "채팅",
             selectIcon = R.drawable.baseline_chat_bubble_24,
             onSelectedIcon = R.drawable.outline_chat_bubble_outline_24,
-            route = Routes.Chat.route,
+            route = Routes.Chat.route
         ),
         BarItem(
             title = "내정보",

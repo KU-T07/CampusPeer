@@ -1,28 +1,42 @@
 package com.example.campuspeer.chat
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-
-import com.example.campuspeer.model.Message
-import com.example.campuspeer.model.PostItem
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.campuspeer.model.Category
+import com.example.campuspeer.model.Message
+import com.example.campuspeer.model.PostItem
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 
 @Composable
@@ -46,55 +60,67 @@ fun ChatRoomScreen(
         viewModel.fetchItemDetails(itemId)
     }
 
-    val isSeller = currentUserId == "T3SDNm5GqYfNSEb8KIqX2aCxFmc2"
+    val isSeller = currentItem?.sellerId == currentUserId
 
     Column(modifier = Modifier.fillMaxSize()) {
         currentItem?.let { item ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFF5F5F5))
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ItemTransactionHeader(item = item)
-                Spacer(modifier = Modifier.width(8.dp))
-                TransactionStatusDropdown(
-                    isSeller = isSeller,
-                    currentStatus = status,
-                    onStatusChange = { newStatus ->
-                        viewModel.updateTransactionStatus(roomId, newStatus)
-                    }
-                )
+            if (isSeller) {
+                // ── 판매자용 헤더 (상품 + 상태 조절)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFF5F5F5))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    ItemTransactionHeader(item = item)
+                    Spacer(Modifier.width(8.dp))
+                    TransactionStatusDropdown(
+                        isSeller = true,
+                        currentStatus = status,
+                        onStatusChange = { newStatus ->
+                            viewModel.updateTransactionStatus(roomId, newStatus)
+                        }
+                    )
+                }
+            } else {
+                // ── 구매자용 헤더 (상품 정보만)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFF5F5F5))
+                        .padding(12.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    ItemTransactionHeader(item = item)
+                }
             }
         }
 
+        // ── 메시지 리스트
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 8.dp),
             reverseLayout = true,
-            contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             itemsIndexed(messages.reversed()) { index, message ->
                 val isMe = message.senderId == currentUserId
-                val showProfileImage = when {
-                    isMe -> false
-                    index == 0 -> true
-                    else -> {
-                        val previous = messages.reversed()[index - 1]
-                        message.senderId != previous.senderId
-                    }
-                }
+                val showProfileImage = !isMe &&
+                        (index == 0 || messages.reversed()[index - 1].senderId != message.senderId)
+
                 ChatBubble(
                     message = message,
                     isMe = isMe,
                     showProfileImage = showProfileImage
                 )
+                Spacer(modifier = Modifier.height(4.dp))
             }
         }
 
+        // ── 입력창
         MessageInput(
             onMessageSent = { text ->
                 viewModel.sendMessage(roomId, currentUserId, text)
@@ -141,96 +167,59 @@ fun ItemTransactionHeader(item: PostItem) {
     }
 }
 
+
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
-fun ChatRoomScreenPreview() {
-    val currentUserId = "T3SDNm5GqYfNSEb8KIqX2aCxFmc2"
-    val sampleItemId = "sampleItemId123"
-
-    val sampleItem = PostItem(
-        id = sampleItemId,
-        title = "새내기 필수템",
-        price = 1000,
-        imageUrl = "https://via.placeholder.com/150"
+fun ChatRoomLayoutPreviewSimple() {
+    // 더미 데이터 준비
+    val dummyItem = PostItem(
+        id          = "item1",
+        title       = "샘플 상품",
+        price       = 12345,
+        description = "",
+        imageUrl    = "",
+        category    = Category.ETC,
+        status      = "거래가능",
+        sellerId    = "userB",
+        timestamp   = System.currentTimeMillis(),
+        location    = "테스트위치"
+    )
+    val msg1 = Message(
+        senderId  = "userB",
+        text      = "안녕하세요!",
+        timestamp = System.currentTimeMillis() - 60_000L
+    )
+    val msg2 = Message(
+        senderId  = "userA",
+        text      = "네, 반갑습니다!",
+        timestamp = System.currentTimeMillis() - 30_000L
     )
 
-    val sampleMessages = remember {
-        mutableStateListOf(
-            Message(
-                senderId = "userB",
-                text = "안녕하세요!",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 5,
-                profileImageUrl = "https://via.placeholder.com/36x36/FF5733/FFFFFF?text=P1"
-            ),
-            Message(
-                senderId = "userB",
-                text = "가격은 조정 가능합니다.",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 4,
-                profileImageUrl = "https://via.placeholder.com/36x36/FF5733/FFFFFF?text=P1"
-            ),
-            Message(
-                senderId = currentUserId,
-                text = "네, 괜찮습니다.",
-                timestamp = System.currentTimeMillis() - 1000 * 60 * 3,
-                profileImageUrl = null
-            )
-        )
-    }
-
-    var sampleStatus by remember { mutableStateOf("거래 진행") }
-
     Column(modifier = Modifier.fillMaxSize()) {
-        // 한 줄에 배치된 Header
-        Row(
+        // 1) 상단 헤더(상품 + 상태)
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF5F5F5))
+                .background(color = androidx.compose.ui.graphics.Color(0xFFF5F5F5))
                 .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            contentAlignment = Alignment.CenterStart
         ) {
-            ItemTransactionHeader(item = sampleItem)
-            Spacer(modifier = Modifier.width(8.dp))
-            TransactionStatusDropdown(
-                isSeller = true,
-                currentStatus = sampleStatus,
-                onStatusChange = { sampleStatus = it }
-            )
+            ItemTransactionHeader(item = dummyItem)
         }
 
-        // 채팅 메시지
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 8.dp),
-            reverseLayout = true,
-            contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
-        ) {
-            itemsIndexed(sampleMessages.reversed()) { index, message ->
-                val isMe = message.senderId == currentUserId
-                val showProfileImage = when {
-                    isMe -> false
-                    index == 0 -> true
-                    else -> {
-                        val previous = sampleMessages.reversed()[index - 1]
-                        message.senderId != previous.senderId
-                    }
-                }
-                ChatBubble(
-                    message = message,
-                    isMe = isMe,
-                    showProfileImage = showProfileImage
-                )
-            }
+        // 2) 채팅 메시지 미리보기
+        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            ChatBubble(message = msg1, isMe = false, showProfileImage = true)
+            Spacer(modifier = Modifier.height(4.dp))
+            ChatBubble(message = msg2, isMe = true, showProfileImage = false)
         }
 
-        // 메시지 입력창
-        MessageInput(
-            onMessageSent = { text ->
-                sampleMessages.add(
-                    Message(currentUserId, text, System.currentTimeMillis())
-                )
-            }
-        )
+        // 3) 빈 공간 띄우고
+        Spacer(modifier = Modifier.weight(1f))
+
+        // 4) 입력창
+        MessageInput(onMessageSent = {})
     }
 }
+
