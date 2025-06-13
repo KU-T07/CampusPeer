@@ -33,7 +33,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
+import com.example.campuspeer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,8 +147,12 @@ fun PostItemListScreen(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            TextButton(onClick = { showFilterDialog = true }) {
-                Text("필터")
+            IconButton(onClick = { showFilterDialog = true }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_filter_alt_24),
+                    contentDescription = "필터",
+                    tint = Color.Unspecified // 아이콘의 원래 색 유지 (검정)
+                )
             }
         }
     }
