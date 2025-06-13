@@ -55,13 +55,6 @@ fun PostItemListScreen(
     val filteredPosts = allPosts.filter { post ->
         val user = allUsers.find { it.uid == post.sellerId }
 
-        if (user != null) {
-            Log.d("학과필터", "✅ 매칭됨: post.sellerId=${post.sellerId} == user.uid=${user.uid}")
-        } else {
-            Log.d("학과필터", "❌ 매칭 안됨: post.sellerId=${post.sellerId} 와 일치하는 uid 없음")
-            Log.d("학과필터", "📌 전체 유저 UID 목록: ${allUsers.map { it.uid }}")
-        }
-
         val categoryMatches = selectedCategoryFilter == null || post.category == selectedCategoryFilter
 
         val normalizedQuery = departmentQuery.trim().lowercase()
@@ -69,13 +62,8 @@ fun PostItemListScreen(
         val departmentMatches = normalizedQuery.isBlank() ||
                 (normalizedDepartment?.contains(normalizedQuery) == true)
 
-        Log.d("학과필터", "🎯 비교: DB=${normalizedDepartment}, 입력=$normalizedQuery, 결과=$departmentMatches")
-
         categoryMatches && departmentMatches
     }
-
-
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -101,12 +89,13 @@ fun PostItemListScreen(
                 text = {
                     Column {
                         var expanded by remember { mutableStateOf(false) }
+                        val categories = listOf<Category?>(null) + Category.entries
                         ExposedDropdownMenuBox(
                             expanded = expanded,
                             onExpandedChange = { expanded = !expanded }
                         ) {
                             OutlinedTextField(
-                                value = selectedCategoryFilter?.label ?: "카테고리 선택",
+                                value = selectedCategoryFilter?.label ?: "전체",
                                 onValueChange = {},
                                 readOnly = true,
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
@@ -117,9 +106,9 @@ fun PostItemListScreen(
                                 expanded = expanded,
                                 onDismissRequest = { expanded = false }
                             ) {
-                                Category.entries.forEach { category ->
+                                categories.forEach { category ->
                                     DropdownMenuItem(
-                                        text = { Text(category.label) },
+                                        text = { Text(category?.label ?: "전체") },
                                         onClick = {
                                             selectedCategoryFilter = category
                                             expanded = false

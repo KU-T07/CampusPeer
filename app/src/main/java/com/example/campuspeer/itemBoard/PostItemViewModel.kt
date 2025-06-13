@@ -51,11 +51,6 @@ class PostItemViewModel: ViewModel() {
                 }
 
                 _users.value = userList
-
-                Log.d("유저확인", "📋 불러온 사용자 수: ${userList.size}")
-                userList.forEach { user ->
-                    Log.d("유저확인", "🧑 uid=${user.uid}, department=${user.department}")
-                }
             }
 
             override fun onCancelled(error: DatabaseError) {
