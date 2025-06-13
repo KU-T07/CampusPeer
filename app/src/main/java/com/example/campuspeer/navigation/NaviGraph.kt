@@ -19,6 +19,7 @@ import com.example.campuspeer.itemBoard.PostItemViewModel
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
+import com.example.campuspeer.model.UserData
 import com.example.campuspeer.profile.ProfileScreen
 import com.example.campuspeer.uicomponent.EmailAuthScreen
 import com.example.campuspeer.uicomponent.LoginScreen
@@ -31,7 +32,14 @@ import com.google.firebase.auth.auth
 fun NaviGraph(navController: NavHostController,
               startRoute: String,
               currentUserId: String,
-              allPosts: List<PostItem> = emptyList()) {
+              allPosts: List<PostItem> = emptyList(),
+              allUsers: List<UserData> = emptyList()
+) {
+
+    val viewModel: PostItemViewModel = viewModel()
+    val posts by viewModel.posts.collectAsState()
+    val users by viewModel.users.collectAsState()
+
     NavHost(navController = navController, startDestination = startRoute) {
 
         composable(Routes.Login.route) {
@@ -67,8 +75,9 @@ fun NaviGraph(navController: NavHostController,
             val defaultCategory = Category.ETC
 
             PostItemListScreen(
-                allPosts = allPosts,
+                allPosts = posts,
                 selectedCategory = Category.ETC,
+                allUsers = users,
                 navController = navController
                 //onItemClick = { /* 필요 시 상세 이동 로직 */ }
             )

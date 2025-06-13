@@ -24,6 +24,7 @@ fun NavGraphBuilder.mainNavGraph(
             PostItemListScreen(
                 allPosts = emptyList(), // 또는 ViewModel에서 받아온 데이터
                 selectedCategory = Category.ETC,
+                allUsers = emptyList(),
                 navController = navController // 🔥 이거 꼭 추가!
             )
         }

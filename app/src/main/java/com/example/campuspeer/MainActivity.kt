@@ -28,6 +28,7 @@ class MainActivity : ComponentActivity() {
             }
 
 
+
             //이전 유저 데이터를 저장해서,
             // 한번 로그인한 유저는 바로 넘어갈 수 있게 하면 좋을 것 같은데요..
         }
