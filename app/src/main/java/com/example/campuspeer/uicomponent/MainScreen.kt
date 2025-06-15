@@ -139,7 +139,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 Column(modifier = Modifier.padding(contentPadding)) {
                    NaviGraph(
                        navController = navController,
-                       currentUserId = "dummyUserId",
+                       currentUserId = viewModel.getCurrentUserId().toString(),
                        startRoute = Routes.PostItemList.route,
                        allPosts = posts
                    )
