@@ -19,9 +19,13 @@ class PostItemRepository {
         onSuccess: () -> Unit = {},
         onFailure: (Exception) -> Unit = {}
     ) {
-        val postMap = post.copy(timestamp = System.currentTimeMillis()).toMap()
+        val newId = db.collection("posts").document().id  // 새로운 문서 ID 생성
+        val postWithId = post.copy(id = newId, timestamp = System.currentTimeMillis())
+        val postMap = postWithId.toMap()
+
         db.collection("posts")
-            .add(postMap)
+            .document(newId) // ID를 명시적으로 설정
+            .set(postMap)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
     }

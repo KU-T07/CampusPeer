@@ -1,6 +1,5 @@
 package com.example.campuspeer.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.campuspeer.model.UserData
 import com.google.firebase.auth.FirebaseAuth
@@ -49,17 +48,23 @@ class EmailAuthViewModel : ViewModel() {
 //    }
 
     // 4. 사용자 정보 저장 (verified = false)
-    fun saveUserInfo(department: String, studentNumber: String, onResult: (Boolean) -> Unit) {
+    fun saveUserInfo(
+        department: String,
+        studentNumber: String,
+        nickname: String,                  // ← NEW
+        onResult: (Boolean) -> Unit
+    ) {
         val user = auth.currentUser ?: return onResult(false)
         val userData = UserData(
-            uid = user.uid,
-            email = user.email ?: "",
-            department = department,
+            uid           = user.uid,
+            email         = user.email ?: "",
+            department    = department,
             studentNumber = studentNumber,
-            verified = false // 최초 저장 시 미승인 상태
+            nickname      = nickname,      // ← NEW
+            verified      = false
         )
-
-        usersRef.child(user.uid).setValue(userData)
+        usersRef.child(user.uid)
+            .setValue(userData)
             .addOnSuccessListener { onResult(true) }
             .addOnFailureListener { onResult(false) }
     }

@@ -1,5 +1,7 @@
 package com.example.campuspeer.model
 
+import com.google.firebase.firestore.IgnoreExtraProperties
+
 data class Message(
     val senderId: String = "",
     val text: String? = "",

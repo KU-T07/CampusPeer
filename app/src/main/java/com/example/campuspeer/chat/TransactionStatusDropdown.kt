@@ -1,18 +1,30 @@
 package com.example.campuspeer.chat
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.TextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,39 +35,45 @@ fun TransactionStatusDropdown(
 ) {
     if (!isSeller) return
 
-    val options = listOf("거래 진행", "거래 완료", "거래 취소")
+    val statusOptions = listOf("거래가능", "예약중", "거래완료")
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(currentStatus) }
 
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = Modifier
-            .fillMaxWidth(0.5f) // 너비를 반으로 제한
-    ) {
-        TextField(
-            value = selectedText,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("거래 상태") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+    Box {
+        OutlinedButton(
+            onClick = { expanded = true },
             modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth(),
-            singleLine = true
-        )
+                .height(40.dp),
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, Color(0xFFCCCCCC)),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = currentStatus,
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "드롭다운 화살표",
+                    tint = Color.Black
+                )
+            }
+        }
 
-        ExposedDropdownMenu(
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            statusOptions.forEach { status ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(status) },
                     onClick = {
-                        selectedText = option
                         expanded = false
-                        onStatusChange(option)
+                        onStatusChange(status)
                     }
                 )
             }

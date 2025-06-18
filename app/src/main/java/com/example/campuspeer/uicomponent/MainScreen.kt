@@ -137,12 +137,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             ) { contentPadding ->
                 Column(modifier = Modifier.padding(contentPadding)) {
-                   NaviGraph(
-                       navController = navController,
-                       currentUserId = viewModel.getCurrentUserId().toString(),
-                       startRoute = Routes.PostItemList.route,
-                       allPosts = posts
-                   )
+                    NaviGraph(
+                        navController = navController,
+                        currentUserId = viewModel.getCurrentUserId().toString(),
+                        startRoute = Routes.PostItemList.route,
+                        allPosts = posts
+                    )
                     Text(text = viewModel.getCurrentUserId().toString())
                 }
             }

@@ -8,5 +8,6 @@ data class UserData(
     val studentNumber: String = "",
     val verified: Boolean = false,
     val ratingTotal: Int = 0,
-    val ratingCount: Int = 0
+    val ratingCount: Int = 0,
+    val nickname: String = ""
 )
