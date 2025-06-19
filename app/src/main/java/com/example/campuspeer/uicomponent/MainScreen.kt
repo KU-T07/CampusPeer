@@ -81,7 +81,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                DrawerContent()
+                //DrawerContent()
             }
         }
     ) {
@@ -95,7 +95,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         TopAppBar(
                             title = { Text(text = currentRoute.route) },
                             navigationIcon = {
-                                IconButton(onClick = {
+                                /*IconButton(onClick = {
                                     coroutineScope.launch {
                                         if (drawerState.isOpen) drawerState.close() else drawerState.open()
                                     }
@@ -104,7 +104,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                         imageVector = Icons.Default.Menu,
                                         contentDescription = ""
                                     )
-                                }
+                                }*/
                             }
 
                         )
@@ -112,14 +112,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         TopAppBar(
                             title = { },
                             navigationIcon = {
-                                IconButton(onClick = {
+                                /*IconButton(onClick = {
                                     navController.popBackStack()
                                 }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                         contentDescription = ""
                                     )
-                                }
+                                }*/
                             }
                         )
                 },
