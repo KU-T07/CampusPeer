@@ -51,68 +51,53 @@ fun ChatRoomScreen(
     itemId: String,
     viewModel: ChatViewModel = viewModel()
 ) {
-    // 1) StateFlows 구독
-    val messages   by viewModel.messages.collectAsState()
-    val status     by viewModel.status.collectAsState()
+    val messages by viewModel.messages.collectAsState()
+    val status by viewModel.status.collectAsState()
     val currentItem by viewModel.currentItem.collectAsState()
     var partnerName by remember { mutableStateOf<String?>("로딩 중…") }
 
     val sellerId = currentItem?.sellerId ?: ""
     val isSeller = sellerId.trim() == currentUserId.trim()
 
-    // 평점 기능 변수
     var showRatingDialog by remember { mutableStateOf(false) }
-    var alreadyRated by remember { mutableStateOf(true) }
+    var alreadyRated by remember { mutableStateOf(false) }
 
-    println("🪪 currentUserId = '$currentUserId'")
-    println("📦 sellerId from item = '$sellerId'")
-    println("🔍 isSeller = $isSeller")
+    // 🔁 상태 변화 감지 시 평점 확인
+    LaunchedEffect(status, roomId, currentUserId) {
+        if (status == "거래완료") {
+            val ref = Firebase.database
+                .getReference("RatingsDone")
+                .child(roomId)
+                .child(currentUserId)
 
-    // 거래 상태가 완료되면 다이얼로그 표시
-    LaunchedEffect(status) {
-        if (status == "거래완료" && !alreadyRated) {
-            showRatingDialog = true
+            ref.get().addOnSuccessListener { snapshot ->
+                val done = snapshot.getValue(Boolean::class.java) ?: false
+                alreadyRated = done
+                showRatingDialog = !done
+            }
         }
     }
 
-    // 3) 메시지·상태 리스너
     LaunchedEffect(roomId) {
         viewModel.listenForMessage(roomId)
         viewModel.listenForTransactionStatus(roomId)
-
-        // 평점 매기기 완료했는지 확인
-        val ref = Firebase.database
-            .getReference("RatingsDone")
-            .child(roomId)
-            .child(currentUserId)
-
-        ref.get().addOnSuccessListener { snapshot ->
-            val done = snapshot.getValue(Boolean::class.java) ?: false
-            alreadyRated = done
-        }
     }
-    // 4) 상품 정보 로드
+
     LaunchedEffect(itemId) {
-        println("🧐 fetchItemDetails 호출, itemId=$itemId")
         viewModel.fetchItemSummaryForChat(itemId)
     }
-    // 3) 파트너 정보 로드 (Realtime DB → Users/{uid})
+
     LaunchedEffect(partnerId) {
-        Firebase
-            .database
-            .reference
-            .child("Users")
+        Firebase.database
+            .getReference("Users")
             .child(partnerId)
             .get()
             .addOnSuccessListener { snapshot ->
                 snapshot.getValue(UserData::class.java)?.let { user ->
-                    // 닉네임이 비어있으면 studentNumber 또는 email 앞부분으로 대체
                     partnerName = user.nickname
                         .takeIf { it.isNotBlank() }
-                        ?: user.studentNumber
-                            .takeIf { it.isNotBlank() }
-                                ?: user.email
-                            .substringBefore("@")
+                        ?: user.studentNumber.takeIf { it.isNotBlank() }
+                                ?: user.email.substringBefore("@")
                 } ?: run {
                     partnerName = "알 수 없는 사용자"
                 }
@@ -123,7 +108,6 @@ fun ChatRoomScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // ─── 채팅방 최상단: 상대방 이름
         Text(
             text = partnerName ?: "로딩 중…",
             style = MaterialTheme.typography.titleLarge,
@@ -132,7 +116,7 @@ fun ChatRoomScreen(
                 .background(Color(0xFFF5F5F5))
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         )
-        // ─── 상품 정보 헤더 (판매자면 상태 드롭다운까지)
+
         currentItem?.let { item ->
             Row(
                 modifier = Modifier
@@ -153,8 +137,6 @@ fun ChatRoomScreen(
             }
         }
 
-
-        // ─── 메시지 리스트
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -176,32 +158,30 @@ fun ChatRoomScreen(
             }
         }
 
-        // ─── 메시지 입력창
         MessageInput { text ->
             viewModel.sendMessage(roomId, currentUserId, text)
         }
     }
 
-        if (showRatingDialog) {
-            RatingDialog(
-                targetUserId = partnerId,
-                onSubmit = { rating ->
-                    RatingUtils.updateUserRating(partnerId, rating) { success ->
-                        if (success) {
-                            RatingUtils.markRatingDone(roomId, currentUserId, true)
-                            showRatingDialog = false
-                            alreadyRated = true
-                        }
+    if (showRatingDialog) {
+        RatingDialog(
+            targetUserId = partnerId,
+            onSubmit = { rating ->
+                RatingUtils.updateUserRating(partnerId, rating) { success ->
+                    if (success) {
+                        RatingUtils.markRatingDone(roomId, currentUserId, true)
+                        showRatingDialog = false
+                        alreadyRated = true
                     }
-                },
-                onDismiss = {
-                    RatingUtils.markRatingDone(roomId, currentUserId, false)
-                    showRatingDialog = false
-                    alreadyRated = false
                 }
-            )
-        }
-
+            },
+            onDismiss = {
+                RatingUtils.markRatingDone(roomId, currentUserId, false)
+                showRatingDialog = false
+                alreadyRated = false
+            }
+        )
+    }
 }
 
 @Composable
