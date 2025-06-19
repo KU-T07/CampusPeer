@@ -1,5 +1,7 @@
 package com.example.campuspeer.itemBoard
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -17,6 +20,7 @@ import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.model.UserData
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +35,8 @@ fun PostItemListScreen(
 
     var selectedCategoryFilter by remember { mutableStateOf<Category?>(null) }
     var departmentQuery by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    var backPressedOnce by remember { mutableStateOf(false) }
 
     val filteredPosts = allPosts.filter { post ->
         val user = allUsers.find { it.uid == post.sellerId }
@@ -43,6 +49,23 @@ fun PostItemListScreen(
                 (normalizedDepartment?.contains(normalizedQuery) == true)
 
         categoryMatches && departmentMatches
+    }
+
+    // ⏪ 뒤로가기 두 번 클릭 시 앱 종료 처리
+    BackHandler {
+        if (drawerState.isOpen) {
+            coroutineScope.launch { drawerState.close() }
+        } else if (!backPressedOnce) {
+            backPressedOnce = true
+            Toast.makeText(context, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+
+            coroutineScope.launch {
+                kotlinx.coroutines.delay(2000)
+                backPressedOnce = false
+            }
+        } else {
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }
     }
 
     ModalNavigationDrawer(
