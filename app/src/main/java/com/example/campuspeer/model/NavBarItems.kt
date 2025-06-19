@@ -10,12 +10,12 @@ object NavBarItems{
             onSelectedIcon = R.drawable.outline_home_24,
             route = Routes.PostItemList.route
         ),
-        BarItem(
-            title = "게시판",
-            selectIcon = R.drawable.baseline_groups_24,
-            onSelectedIcon = R.drawable.outline_groups_24,
-            route = Routes.HelpBoard.route
-        ),
+//        BarItem(
+//            title = "게시판",
+//            selectIcon = R.drawable.baseline_groups_24,
+//            onSelectedIcon = R.drawable.outline_groups_24,
+//            route = Routes.HelpBoard.route
+//        ),
         BarItem(
             title = "채팅",
             selectIcon = R.drawable.baseline_chat_bubble_24,
