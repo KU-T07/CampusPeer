@@ -62,7 +62,7 @@ fun ChatRoomScreen(
 
     // 평점 기능 변수
     var showRatingDialog by remember { mutableStateOf(false) }
-    var alreadyRated by remember { mutableStateOf(false) }
+    var alreadyRated by remember { mutableStateOf(true) }
 
     println("🪪 currentUserId = '$currentUserId'")
     println("📦 sellerId from item = '$sellerId'")
@@ -181,23 +181,24 @@ fun ChatRoomScreen(
             viewModel.sendMessage(roomId, currentUserId, text)
         }
     }
-
-    if (showRatingDialog && alreadyRated == false) {
-        RatingDialog(
-            targetUserId = partnerId,
-            onSubmit = { rating ->
-                RatingUtils.updateUserRating(partnerId, rating) { success ->
-                    if (success) {
-                        RatingUtils.markRatingDone(roomId, currentUserId)
-                        showRatingDialog = false
-                        alreadyRated = true
+    if (alreadyRated == false){
+        if (showRatingDialog) {
+            RatingDialog(
+                targetUserId = partnerId,
+                onSubmit = { rating ->
+                    RatingUtils.updateUserRating(partnerId, rating) { success ->
+                        if (success) {
+                            RatingUtils.markRatingDone(roomId, currentUserId)
+                            showRatingDialog = false
+                            alreadyRated = true
+                        }
                     }
+                },
+                onDismiss = {
+                    showRatingDialog = false
                 }
-            },
-            onDismiss = {
-                showRatingDialog = false
-            }
-        )
+            )
+        }
     }
 }
 
