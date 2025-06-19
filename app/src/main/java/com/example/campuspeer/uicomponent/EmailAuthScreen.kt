@@ -3,6 +3,7 @@ package com.example.campuspeer.uicomponent
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -80,6 +81,10 @@ fun EmailAuthScreen(
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = {
+                if (email.isBlank()) {
+                    Toast.makeText(context, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
                 viewModel.sendVerificationEmail(email) { success, error ->
                     message = if (success) {
                         "인증 메일이 발송되었습니다. 메일을 확인해주세요."
@@ -160,6 +165,26 @@ fun EmailAuthScreen(
 
         Button(onClick = {
             val uri = studentIdUri
+            if (password.isBlank()) {
+                message = "비밀번호를 입력해주세요."
+                return@Button
+            }
+            if (confirmPassword.isBlank()) {
+                message = "비밀번호 확인을 입력해주세요."
+                return@Button
+            }
+            if (nickname.isBlank()) {
+                message = "별명을 입력해주세요."
+                return@Button
+            }
+            if (department.isBlank()) {
+                message = "학과를 입력해주세요."
+                return@Button
+            }
+            if (studentNumber.isBlank()) {
+                message = "학번을 입력해주세요."
+                return@Button
+            }
             if (uri == null) {
                 message = "학생증을 업로드해주세요."
                 return@Button
