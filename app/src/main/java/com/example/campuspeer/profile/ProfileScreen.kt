@@ -96,7 +96,7 @@ fun ProfileScreen() {
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.School, "학과", department)
                 Spacer(modifier = Modifier.height(12.dp))
-                ProfileItem(Icons.Default.Star, "평점", String.format("%.1f / 4.5", rating), Color(0xFFFFD700))
+                ProfileItem(Icons.Default.Star, "평점", String.format("%.1f / 5", rating), Color(0xFFFFD700))
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Person, "이메일", email)
                 Spacer(modifier = Modifier.height(12.dp))
