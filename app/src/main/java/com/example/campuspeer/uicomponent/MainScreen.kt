@@ -76,16 +76,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val owner: ViewModelStoreOwner = LocalEmailAuthViewModelOwner.current
     val viewModel: EmailAuthViewModel = viewModel(viewModelStoreOwner = owner)
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                //DrawerContent()
-            }
-        }
-    ) {
+
 
     CompositionLocalProvider(
         LocalNavGraphViewModelStoreOwner provides navStoreOwner
@@ -136,7 +127,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     }
 }
 
-}
+
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
