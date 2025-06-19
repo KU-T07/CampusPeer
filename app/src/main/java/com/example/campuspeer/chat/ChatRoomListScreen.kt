@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.campuspeer.model.ChatRoom
 import com.example.campuspeer.model.UserData
 import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import com.google.firebase.firestore.firestore
 
 @Composable
@@ -49,7 +50,7 @@ fun ChatRoomListScreen(
 
     var chatRooms by remember { mutableStateOf<List<ChatRoom>>(emptyList()) }
     val displayNames = remember { mutableStateMapOf<String, String>() }
-    val itemTitles   = remember { mutableStateMapOf<String, String>() }
+    val itemTitles = remember { mutableStateMapOf<String, String>() }
 
     // 1) 내 채팅방 구독
     LaunchedEffect(currentUserId) {
@@ -67,16 +68,25 @@ fun ChatRoomListScreen(
 
             // 파트너 이름
             if (!displayNames.containsKey(partnerId)) {
-                db.collection("users").document(partnerId)
+                Firebase
+                    .database
+                    .reference
+                    .child("Users")
+                    .child(partnerId)
                     .get()
-                    .addOnSuccessListener { doc ->
-                        val user = doc.toObject(UserData::class.java)
-                        val name = user?.studentNumber?.takeIf { it.isNotBlank() }
-                            ?: user?.email?.substringBefore("@")
-                            ?: partnerId
-                        displayNames[partnerId] = name
+                    .addOnSuccessListener { snapshot ->
+                        snapshot.getValue(UserData::class.java)?.let { user ->
+                            val name = user.nickname.takeIf { it.isNotBlank() }
+                                ?: user.studentNumber.takeIf { it.isNotBlank() }
+                                ?: user.email.substringBefore("@")
+                            displayNames[partnerId] = name
+                        } ?: run {
+                            displayNames[partnerId] = "알 수 없는 사용자"
+                        }
                     }
-                    .addOnFailureListener { displayNames[partnerId] = partnerId }
+                    .addOnFailureListener {
+                        displayNames[partnerId] = "알 수 없는 사용자"
+                    }
             }
 
             // 상품 제목
@@ -87,7 +97,11 @@ fun ChatRoomListScreen(
                         // title만 꺼내오기
                         val title = doc.getString("title") ?: "알 수 없는 상품"
                         itemTitles[room.itemId] = title
-                     }
+                    }
+                    .addOnFailureListener {
+                        itemTitles[room.itemId] = "알 수 없는 상품"
+
+                    }
             }
         }
     }
@@ -98,10 +112,10 @@ fun ChatRoomListScreen(
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(chatRooms) { room ->
-            val partnerId  = room.user1Id.takeIf { it != currentUserId } ?: room.user2Id
-            val name       = displayNames[partnerId] ?: "로딩 중…"
-            val title      = itemTitles[room.itemId] ?: "로딩 중…"
-            val labelText  = "$name • $title"
+            val partnerId = room.user1Id.takeIf { it != currentUserId } ?: room.user2Id
+            val name = displayNames[partnerId] ?: "로딩 중…"
+            val title = itemTitles[room.itemId] ?: "로딩 중…"
+            val labelText = "$name • $title"
 
             ElevatedCard(
                 modifier = Modifier
