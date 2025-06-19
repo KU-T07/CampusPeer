@@ -81,43 +81,43 @@ fun MainScreen(modifier: Modifier = Modifier) {
         }
     ) {
 
-    CompositionLocalProvider(
-        LocalNavGraphViewModelStoreOwner provides navStoreOwner
-    ) {
-        Scaffold(
-            topBar = {
-                if (currentRoute.isRoot)
-                    TopAppBar(
-                        title = { Text(text = currentRoute.route) }
+        CompositionLocalProvider(
+            LocalNavGraphViewModelStoreOwner provides navStoreOwner
+        ) {
+            Scaffold(
+                topBar = {
+                    if (currentRoute.isRoot)
+                        TopAppBar(
+                            title = { Text(text = currentRoute.route) }
+                        )
+                },
+                bottomBar = {
+                    if (currentRoute.isRoot)
+                        BottomNavigationBar(navController)
+                },
+                floatingActionButton = {
+                    if (currentRoute == Routes.PostItemList)
+                        FloatingActionButton(onClick = {
+                            navController.navigate(Routes.PostItemCreate.route)
+                        }) {
+                            Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                        }
+                }
+            ) { contentPadding ->
+                Column(modifier = Modifier.padding(contentPadding)) {
+                    NaviGraph(
+                        navController = navController,
+                        currentUserId = viewModel.getCurrentUserId().toString(),
+                        startRoute = Routes.PostItemList.route,
+                        allPosts = posts
                     )
-            },
-            bottomBar = {
-                if (currentRoute.isRoot)
-                    BottomNavigationBar(navController)
-            },
-            floatingActionButton = {
-                if (currentRoute == Routes.PostItemList)
-                    FloatingActionButton(onClick = {
-                        navController.navigate(Routes.PostItemCreate.route)
-                    }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
-                    }
-            }
-        ) { contentPadding ->
-            Column(modifier = Modifier.padding(contentPadding)) {
-                NaviGraph(
-                    navController = navController,
-                    currentUserId = viewModel.getCurrentUserId().toString(),
-                    startRoute = Routes.PostItemList.route,
-                    allPosts = posts
-                )
-                Text(text = viewModel.getCurrentUserId().toString())
+                    Text(text = viewModel.getCurrentUserId().toString())
+                }
             }
         }
     }
+
 }
-
-
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
