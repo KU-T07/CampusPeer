@@ -181,7 +181,7 @@ fun ChatRoomScreen(
             viewModel.sendMessage(roomId, currentUserId, text)
         }
     }
-    if (alreadyRated == false){
+    if (alreadyRated != true){
         if (showRatingDialog) {
             RatingDialog(
                 targetUserId = partnerId,
