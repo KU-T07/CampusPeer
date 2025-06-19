@@ -196,7 +196,7 @@ fun ChatRoomScreen(
                 },
                 onDismiss = {
                     RatingUtils.markRatingDone(roomId, currentUserId, false)
-                    showRatingDialog = true
+                    showRatingDialog = false
                     alreadyRated = false
                 }
             )
