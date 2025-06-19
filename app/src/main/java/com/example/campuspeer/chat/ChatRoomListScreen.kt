@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.campuspeer.model.ChatRoom
 import com.example.campuspeer.model.UserData
@@ -45,49 +46,62 @@ fun ChatRoomListScreen(
     onNavigateToChat: (roomId: String, partnerId: String, itemId: String) -> Unit
 ) {
     val db = Firebase.firestore
+
     var chatRooms by remember { mutableStateOf<List<ChatRoom>>(emptyList()) }
-
     val displayNames = remember { mutableStateMapOf<String, String>() }
+    val itemTitles   = remember { mutableStateMapOf<String, String>() }
 
-
-    LaunchedEffect(Unit) {
+    // 1) 내 채팅방 구독
+    LaunchedEffect(currentUserId) {
         db.collection("chatRooms")
             .whereArrayContains("participants", currentUserId)
-            .addSnapshotListener { snapshot, _ ->
-                chatRooms = snapshot?.map { it.toObject(ChatRoom::class.java) } ?: emptyList()
+            .addSnapshotListener { snap, _ ->
+                chatRooms = snap?.mapNotNull { it.toObject(ChatRoom::class.java) } ?: emptyList()
             }
     }
+
+    // 2) 채팅방이 바뀔 때마다: 파트너 이름과 아이템 타이틀을 한 번만 읽어오기
     LaunchedEffect(chatRooms) {
         chatRooms.forEach { room ->
             val partnerId = room.user1Id.takeIf { it != currentUserId } ?: room.user2Id
+
+            // 파트너 이름
             if (!displayNames.containsKey(partnerId)) {
-                db.collection("users")
-                    .document(partnerId)
+                db.collection("users").document(partnerId)
                     .get()
                     .addOnSuccessListener { doc ->
                         val user = doc.toObject(UserData::class.java)
-                        // 학번이 있으면 학번, 없으면 email 앞부분, 없으면 UID
-                        val name = user?.studentNumber
-                            .takeUnless { it.isNullOrBlank() }
+                        val name = user?.studentNumber?.takeIf { it.isNotBlank() }
                             ?: user?.email?.substringBefore("@")
                             ?: partnerId
                         displayNames[partnerId] = name
                     }
-                    .addOnFailureListener {
-                        displayNames[partnerId] = partnerId
-                    }
+                    .addOnFailureListener { displayNames[partnerId] = partnerId }
+            }
+
+            // 상품 제목
+            if (!itemTitles.containsKey(room.itemId)) {
+                db.collection("posts").document(room.itemId)
+                    .get()
+                    .addOnSuccessListener { doc ->
+                        // title만 꺼내오기
+                        val title = doc.getString("title") ?: "알 수 없는 상품"
+                        itemTitles[room.itemId] = title
+                     }
             }
         }
     }
 
+    // 3) UI
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(chatRooms) { room ->
-            // 내 ID가 user1Id면 상대는 user2Id, 아니면 user1Id
-            val partnerId = if (room.user1Id == currentUserId) room.user2Id else room.user1Id
-            val displayName = displayNames[partnerId] ?: "로딩 중..."
+            val partnerId  = room.user1Id.takeIf { it != currentUserId } ?: room.user2Id
+            val name       = displayNames[partnerId] ?: "로딩 중…"
+            val title      = itemTitles[room.itemId] ?: "로딩 중…"
+            val labelText  = "$name • $title"
 
             ElevatedCard(
                 modifier = Modifier
@@ -103,28 +117,29 @@ fun ChatRoomListScreen(
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 1) 아바타 플레이스홀더
+                    // 간단 아바타
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(40.dp)
                             .clip(CircleShape)
                             .background(Color(0xFFE0E0E0)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Person,
-                            contentDescription = "avatar",
+                            contentDescription = null,
                             tint = Color.Gray,
-                            modifier = Modifier.size(32.dp)
+                            modifier = Modifier.size(24.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(Modifier.width(12.dp))
 
-                    // 2) 상대방 ID
                     Text(
-                        text = displayName,
-                        style = MaterialTheme.typography.titleMedium
+                        text = labelText,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

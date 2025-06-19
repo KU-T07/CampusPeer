@@ -2,7 +2,9 @@ package com.example.campuspeer.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.campuspeer.chat.ChatRoomListScreen
 import com.example.campuspeer.chat.ChatRoomScreen
@@ -49,17 +51,25 @@ fun NavGraphBuilder.mainNavGraph(
             )
         }
 
-        composable("chat_room/{roomId}/{partnerId}") { backStackEntry ->
-            val roomId = backStackEntry.arguments?.getString("roomId") ?: return@composable
-            val partnerId = backStackEntry.arguments?.getString("partnerId") ?: return@composable
+        composable(
+            route = "chat_room/{roomId}/{partnerId}/{itemId}",
+            arguments = listOf(
+                navArgument("roomId")    { type = NavType.StringType },
+                navArgument("partnerId") { type = NavType.StringType },
+                navArgument("itemId")    { type = NavType.StringType }
+            )
+        ) { backStack ->
+            val roomId    = backStack.arguments!!.getString("roomId")!!
+            val partnerId = backStack.arguments!!.getString("partnerId")!!
+            val itemId    = backStack.arguments!!.getString("itemId")!!
 
             ChatRoomScreen(
-                roomId = roomId,
+                roomId        = roomId,
                 currentUserId = currentUserId,
-                partnerId = partnerId,
-                itemId = TODO(),
-                viewModel = TODO()
+                partnerId     = partnerId,
+                itemId        = itemId
             )
         }
+
     }
 }

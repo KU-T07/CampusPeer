@@ -1,11 +1,9 @@
 package com.example.campuspeer.model
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import com.google.firebase.database.IgnoreExtraProperties
 import com.naver.maps.geometry.LatLng
 
+@IgnoreExtraProperties
 data class PostItem(
     val id: String = "",
     val title: String = "",
@@ -22,6 +20,7 @@ data class PostItem(
 )
 
 fun PostItem.toMap(): Map<String, Any> = mapOf(
+    "id" to id,
     "title" to title,
     "price" to price,
     "description" to description,

@@ -47,6 +47,7 @@ fun EmailAuthScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var nickname by remember { mutableStateOf("") } //별명 추가
     var department by remember { mutableStateOf("") }
     var studentNumber by remember { mutableStateOf("") }
     var studentIdUri by remember { mutableStateOf<Uri?>(null) }
@@ -119,6 +120,15 @@ fun EmailAuthScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
+        // — 별명 입력란 추가
+        OutlinedTextField(
+            value = nickname,
+            onValueChange = { nickname = it },
+            label = { Text("별명 (채팅 시 표시될 이름)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -158,14 +168,22 @@ fun EmailAuthScreen(
                 message = "이메일 인증을 먼저 완료해주세요."
                 return@Button
             }
+            if (password != confirmPassword) {
+                message = "비밀번호가 일치하지 않습니다."
+                return@Button
+            }
             viewModel.updatePassword(password) { success, error ->
                 if (success) {
-                    viewModel.saveUserInfo(department, studentNumber) { saveSuccess ->
+                    viewModel.saveUserInfo(
+                        department    = department,
+                        studentNumber = studentNumber,
+                        nickname      = nickname      // ← NEW
+                    ) { saveSuccess ->
                         if (!saveSuccess) {
                             message = "사용자 정보 저장 실패"
                             return@saveUserInfo
                         }
-                        sendEmailToAdmin(context, uri, "$email / $department / $studentNumber")
+                        sendEmailToAdmin(context, uri, "$email / $department / $studentNumber / nickname:$nickname")
                         message = "비밀번호가 변경되고 승인 요청이 전송되었습니다."
                         onNavigateToLogin()
                     }
