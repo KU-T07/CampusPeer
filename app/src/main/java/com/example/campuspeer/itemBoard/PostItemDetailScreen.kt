@@ -67,6 +67,7 @@ fun PostItemDetailScreen(
     // 사용자 정보 상태
     var sellerName by remember { mutableStateOf("로딩 중…") }
     var sellerRating by remember { mutableStateOf<Float?>(null) }
+    var sellerCount by remember { mutableStateOf<Int?>(null) } // 거래 횟수 상태
 
     // 스낵바
     val snackbarHostState = remember { SnackbarHostState() }
@@ -91,6 +92,7 @@ fun PostItemDetailScreen(
                     val total = it.ratingTotal
                     val count = it.ratingCount
                     sellerRating = if (count > 0) total.toFloat() / count.toFloat() else null
+                    sellerCount = if (count > 0) count else null // 거래 횟수 저장
                 }
             }
 
@@ -147,6 +149,9 @@ fun PostItemDetailScreen(
                         text = sellerRating?.let { "⭐ ${"%.1f".format(it)} / 5.0" } ?: "평가 없음",
                         style = MaterialTheme.typography.labelSmall
                     )
+                    sellerCount?.let {
+                        Text("거래 횟수: $it 회", style = MaterialTheme.typography.labelSmall) // ✅ 추가
+                    }
                 }
             }
 

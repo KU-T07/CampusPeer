@@ -50,6 +50,7 @@ fun ProfileScreen() {
     var email by remember { mutableStateOf("로딩 중...") }
     var studentNumber by remember { mutableStateOf("로딩 중...") }
     var rating by remember { mutableStateOf(0.0f) }
+    var count by remember { mutableStateOf(0) }
 
     val usersRef = Firebase.database.getReference("Users")
     LaunchedEffect(Unit) {
@@ -62,8 +63,8 @@ fun ProfileScreen() {
 
                 val ratingTotal = snapshot.child("ratingTotal").getValue(Double::class.java) ?: 0.0
                 val ratingCount = snapshot.child("ratingCount").getValue(Long::class.java) ?: 0L
-
                 rating = if (ratingCount > 0) (ratingTotal / ratingCount).toFloat() else 0.0f
+                count = snapshot.child("ratingCount").getValue(Int::class.java) ?: 0
             }
     }
 
@@ -97,6 +98,8 @@ fun ProfileScreen() {
                 ProfileItem(Icons.Default.School, "학과", department)
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Star, "평점", String.format("%.1f / 5", rating), Color(0xFFFFD700))
+                Spacer(modifier = Modifier.height(12.dp))
+                ProfileItem(Icons.Default.Person, "거래횟수", count.toString())
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Person, "이메일", email)
                 Spacer(modifier = Modifier.height(12.dp))
