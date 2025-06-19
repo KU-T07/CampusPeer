@@ -32,12 +32,12 @@ object RatingUtils {
         }
     }
 
-    fun markRatingDone(roomId: String, userId: String) {
+    fun markRatingDone(roomId: String, userId: String, check: Boolean) {
         val ref = FirebaseDatabase.getInstance()
             .getReference("RatingsDone")
             .child(roomId)
             .child(userId)
 
-        ref.setValue(true)
+        ref.setValue(check)
     }
 }

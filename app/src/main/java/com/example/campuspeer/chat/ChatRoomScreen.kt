@@ -188,14 +188,16 @@ fun ChatRoomScreen(
                 onSubmit = { rating ->
                     RatingUtils.updateUserRating(partnerId, rating) { success ->
                         if (success) {
-                            RatingUtils.markRatingDone(roomId, currentUserId)
+                            RatingUtils.markRatingDone(roomId, currentUserId, true)
                             showRatingDialog = false
                             alreadyRated = true
                         }
                     }
                 },
                 onDismiss = {
-                    showRatingDialog = false
+                    RatingUtils.markRatingDone(roomId, currentUserId, false)
+                    showRatingDialog = true
+                    alreadyRated = false
                 }
             )
         }
