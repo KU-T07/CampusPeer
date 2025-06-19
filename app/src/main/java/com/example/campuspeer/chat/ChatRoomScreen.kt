@@ -71,9 +71,18 @@ fun ChatRoomScreen(
     println("🔍 isSeller = $isSeller")
 
     // 거래 상태가 완료되면 다이얼로그 표시
-    LaunchedEffect(status) {
-        if (status == "거래완료" && !alreadyRated) {
-            showRatingDialog = true
+    LaunchedEffect(status, roomId, currentUserId) {
+        if (status == "거래완료") {
+            val ref = Firebase.database
+                .getReference("RatingsDone")
+                .child(roomId)
+                .child(currentUserId)
+
+            ref.get().addOnSuccessListener { snapshot ->
+                val done = snapshot.getValue(Boolean::class.java) ?: false
+                alreadyRated = done
+                showRatingDialog = !done
+            }
         }
     }
 
@@ -81,17 +90,6 @@ fun ChatRoomScreen(
     LaunchedEffect(roomId) {
         viewModel.listenForMessage(roomId)
         viewModel.listenForTransactionStatus(roomId)
-
-        // 평점 매기기 완료했는지 확인
-        val ref = Firebase.database
-            .getReference("RatingsDone")
-            .child(roomId)
-            .child(currentUserId)
-
-        ref.get().addOnSuccessListener { snapshot ->
-            val done = snapshot.getValue(Boolean::class.java) ?: false
-            alreadyRated = done
-        }
     }
     // 4) 상품 정보 로드
     LaunchedEffect(itemId) {
