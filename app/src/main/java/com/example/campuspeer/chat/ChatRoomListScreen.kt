@@ -123,7 +123,7 @@ fun ChatRoomListScreen(
                     .padding(horizontal = 16.dp, vertical = 4.dp)
                     .clickable { onNavigateToChat(room.id, partnerId, room.itemId) },
                 shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.elevatedCardColors()
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9))
             ) {
                 Row(
                     modifier = Modifier

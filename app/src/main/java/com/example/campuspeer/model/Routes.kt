@@ -1,16 +1,16 @@
 package com.example.campuspeer.model
 sealed class Routes(val route: String, val isRoot: Boolean = true) {
-    object Login : Routes("LoginScreen", false)
+    object Login : Routes("로그인", false)
     object Register : Routes("RegisterScreen", false)
     object Main : Routes("MainScreen")
-    object PostItemList : Routes("PostItemListScreen")
+    object PostItemList : Routes("게시글")
     object PostItemDetail : Routes("PostItemDetailScreen/{postId}", isRoot = false) {
         fun routeWithId(postId: String): String = "PostItemDetailScreen/$postId"
     }
     object HelpBoard : Routes("HelpBoardScreen")
     object PostItemCreate : Routes("PostItemCreateScreen", isRoot = false)
-    object Chat : Routes("chat_list")
-    object Profile : Routes("ProfileScreen")
+    object Chat : Routes("채팅")
+    object Profile : Routes("내정보")
 
     object ChatRoom :
         Routes("chat_room/{roomId}/{partnerId}/{itemId}", isRoot = false) {

@@ -8,11 +8,13 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,8 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -34,6 +40,7 @@ import com.example.campuspeer.itemBoard.PostItemViewModel
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NaviGraph
+import com.example.campuspeer.ui.theme.Pretendard
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
 @Composable
@@ -75,7 +82,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet() {
                 //DrawerContent()
             }
         }
@@ -88,7 +95,20 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 topBar = {
                     if (currentRoute.isRoot)
                         TopAppBar(
-                            title = { Text(text = currentRoute.route) },
+                            title = {
+                                Text(
+                                    text = currentRoute.route, style = TextStyle(
+                                        fontFamily = Pretendard,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 32.sp
+                                    )
+                                )
+                            },
+
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color(0xFF85C687),
+                                titleContentColor = Color.White     // 타이틀 색
+                            ),
                             navigationIcon = {
                                 /*IconButton(onClick = {
                                     coroutineScope.launch {
@@ -103,7 +123,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             }
 
                         )
-                    else{}
+                    else {
+                    }
 
                 },
                 bottomBar = {
@@ -114,7 +135,9 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     if (currentRoute == Routes.PostItemList)
                         FloatingActionButton(onClick = {
                             navController.navigate(Routes.PostItemCreate.route)
-                        }) {
+                        } , containerColor = Color(0xFF006747), // 건국 그린
+                            contentColor = Color.White          // 아이콘 색상
+                        ) {
                             Icon(imageVector = Icons.Default.Add, contentDescription = "")
                         }
                 }

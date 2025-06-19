@@ -14,23 +14,24 @@ import com.example.campuspeer.uicomponent.LoginScreen
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.example.campuspeer.ui.theme.CampusPeerTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val emailAuthVm: EmailAuthViewModel by viewModels()
         setContent {
-            CompositionLocalProvider(
-                LocalEmailAuthViewModelOwner provides this  // this가 MainActivity == ViewModelStoreOwner
+            CampusPeerTheme(
+                dynamicColor = false // ← 중요!
             ) {
-                val navController = rememberNavController()
-                NaviGraph(navController = navController, Routes.Login.route,"")
+                CompositionLocalProvider(
+                    LocalEmailAuthViewModelOwner provides this
+                ) {
+                    val navController = rememberNavController()
+                    NaviGraph(navController = navController, Routes.Login.route, "")
+                }
             }
-
-
-
-            //이전 유저 데이터를 저장해서,
-            // 한번 로그인한 유저는 바로 넘어갈 수 있게 하면 좋을 것 같은데요..
         }
     }
 }

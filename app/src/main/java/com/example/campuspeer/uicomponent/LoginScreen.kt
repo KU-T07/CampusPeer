@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -20,18 +21,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.campuspeer.LocalEmailAuthViewModelOwner
+import com.example.campuspeer.ui.theme.Pretendard
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
 @Composable
 fun LoginScreen(
     onNavigateToMain: (String) -> Unit,
-    onRegisterNavigate: () -> Unit, // ✅ 추가된 부분
+    onRegisterNavigate: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -49,18 +54,37 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("CampusPeer", fontSize = 28.sp)
+        Text("CampusPeer",  style = TextStyle(
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.Bold,
+            fontSize = 52.sp
+        ))
+
+        Spacer(modifier = Modifier.height(3.dp))
+        Text("신뢰 할 수 있는 교내 거래 플랫폼",  style = TextStyle(
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp
+        ))
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
+        OutlinedTextField(value = email, onValueChange = { email = it }, label = {
+            Text("Email", style = TextStyle(
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.Medium,
+            fontSize = 16.sp)) })
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
+            label = { Text("Password", style = TextStyle(
+                fontFamily = Pretendard,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp)) },
             visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(22.dp))
 
         Button(
             onClick = {
@@ -74,17 +98,23 @@ fun LoginScreen(
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.width(300.dp)
         ) {
-            Text("Log In")
+            Text("Log In", style = TextStyle(
+                fontFamily = Pretendard,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp))
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(onClick = {
-            onRegisterNavigate() // ✅ 계정이 없으면 회원가입으로 이동
+            onRegisterNavigate()
         }) {
-            Text("계정이 없으신가요? Sign Up")
+            Text("계정이 없으신가요? Sign Up", style = TextStyle(
+                fontFamily = Pretendard,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp))
         }
     }
 }

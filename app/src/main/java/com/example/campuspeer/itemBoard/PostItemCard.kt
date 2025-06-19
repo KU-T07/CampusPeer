@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +58,9 @@ fun PostItemCard(
         modifier = Modifier
             .padding(horizontal = 12.dp, vertical = 6.dp)
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE8F5E9)) // 직접 지정한 카드 배경색
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
             Image(
