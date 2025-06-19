@@ -3,6 +3,7 @@ package com.example.campuspeer.itemBoard
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
@@ -69,10 +70,12 @@ fun PostItemListScreen(
     }
 
     ModalNavigationDrawer(
+        modifier = Modifier.background(Color(0xFFFFFFFF)),
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Column(modifier = Modifier.padding(top = 32.dp)) {
+            ModalDrawerSheet( drawerContainerColor = Color.White){
+
+                Column(modifier = Modifier.padding(top = 32.dp).background(Color(0xFFFFFFFF))) {
                     Text("\uD83D\uDD0D 필터", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
 
                     var expanded by remember { mutableStateOf(false) }

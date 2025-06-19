@@ -109,7 +109,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 if (currentRoute == Routes.PostItemList)
                     FloatingActionButton(onClick = {
                         navController.navigate(Routes.PostItemCreate.route)
-                    }) {
+                    },
+                        containerColor = Color(0xFF006747),  // 예: 건국대 녹색
+                        contentColor = Color.White          // 아이콘 색상
+                        ) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "")
                     }
             }

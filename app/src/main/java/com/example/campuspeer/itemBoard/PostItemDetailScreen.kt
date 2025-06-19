@@ -108,6 +108,7 @@ fun PostItemDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(Color(0xFFEEFFEE))
         ) {
             BackButton(onClick = onBackClick)
 
@@ -119,7 +120,7 @@ fun PostItemDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(240.dp)
-                        .background(Color(0xFFF0EEF5))
+                        .background(Color(0xFFFFFFFF))
                 )
             }
 
@@ -127,13 +128,13 @@ fun PostItemDetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFF8F0FF))
+                    .background(Color(0xFFE7FFEB))
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = Color(0xFFE5D8FF),
+                    color = Color(0xFFF7FFEC),
                     modifier = Modifier.size(48.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
@@ -230,7 +231,7 @@ fun PostItemDetailScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9C9FF)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA4E0A7)),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("채팅하기")

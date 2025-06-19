@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -86,6 +87,7 @@ fun PostItemCreateScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(Color(0xFF85C687))
         ) {
             BackButton(
                 onClick = onBackClick,
@@ -104,7 +106,7 @@ fun PostItemCreateScreen(
             onClick = { imagePickerLauncher.launch("image/*") },
             modifier = Modifier.size(140.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF85C687))
         ) {
             if (imageUri != null) {
                 Image(
@@ -278,7 +280,7 @@ fun PostItemCreateScreen(
                 uploadAndCreatePost()
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2979FF)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF85C687)),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text("등록하기", color = Color.White)
