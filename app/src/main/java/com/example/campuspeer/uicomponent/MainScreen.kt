@@ -70,68 +70,44 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val owner: ViewModelStoreOwner = LocalEmailAuthViewModelOwner.current
     val viewModel: EmailAuthViewModel = viewModel(viewModelStoreOwner = owner)
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val coroutineScope = rememberCoroutineScope()
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                //DrawerContent()
-            }
-        }
+
+
+    CompositionLocalProvider(
+        LocalNavGraphViewModelStoreOwner provides navStoreOwner
     ) {
-
-        CompositionLocalProvider(
-            LocalNavGraphViewModelStoreOwner provides navStoreOwner
-        ) {
-            Scaffold(
-                topBar = {
-                    if (currentRoute.isRoot)
-                        TopAppBar(
-                            title = { Text(text = currentRoute.route) },
-                            navigationIcon = {
-                                /*IconButton(onClick = {
-                                    coroutineScope.launch {
-                                        if (drawerState.isOpen) drawerState.close() else drawerState.open()
-                                    }
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = ""
-                                    )
-                                }*/
-                            }
-
-                        )
-                    else{}
-
-                },
-                bottomBar = {
-                    if (currentRoute.isRoot)
-                        BottomNavigationBar(navController)
-                },
-                floatingActionButton = {
-                    if (currentRoute == Routes.PostItemList)
-                        FloatingActionButton(onClick = {
-                            navController.navigate(Routes.PostItemCreate.route)
-                        }) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "")
-                        }
-                }
-            ) { contentPadding ->
-                Column(modifier = Modifier.padding(contentPadding)) {
-                    NaviGraph(
-                        navController = navController,
-                        currentUserId = viewModel.getCurrentUserId().toString(),
-                        startRoute = Routes.PostItemList.route,
-                        allPosts = posts
+        Scaffold(
+            topBar = {
+                if (currentRoute.isRoot)
+                    TopAppBar(
+                        title = { Text(text = currentRoute.route) }
                     )
-                    Text(text = viewModel.getCurrentUserId().toString())
-                }
+            },
+            bottomBar = {
+                if (currentRoute.isRoot)
+                    BottomNavigationBar(navController)
+            },
+            floatingActionButton = {
+                if (currentRoute == Routes.PostItemList)
+                    FloatingActionButton(onClick = {
+                        navController.navigate(Routes.PostItemCreate.route)
+                    }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                    }
+            }
+        ) { contentPadding ->
+            Column(modifier = Modifier.padding(contentPadding)) {
+                NaviGraph(
+                    navController = navController,
+                    currentUserId = viewModel.getCurrentUserId().toString(),
+                    startRoute = Routes.PostItemList.route,
+                    allPosts = posts
+                )
+                Text(text = viewModel.getCurrentUserId().toString())
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
