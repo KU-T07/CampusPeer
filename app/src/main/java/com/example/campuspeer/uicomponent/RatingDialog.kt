@@ -35,11 +35,7 @@ fun RatingDialog(
                 Text("등록")
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("취소")
-            }
-        },
+
         title = { Text("평점 남기기") },
         text = {
             Column(
