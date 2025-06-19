@@ -36,6 +36,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.UserData
+import com.example.campuspeer.uicomponent.RatingDialog
+import com.example.campuspeer.util.RatingUtils
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
@@ -58,16 +60,36 @@ fun ChatRoomScreen(
     val sellerId = currentItem?.sellerId ?: ""
     val isSeller = sellerId.trim() == currentUserId.trim()
 
+    // 평점 기능 변수
+    var showRatingDialog by remember { mutableStateOf(false) }
+    var alreadyRated by remember { mutableStateOf(false) }
+
     println("🪪 currentUserId = '$currentUserId'")
     println("📦 sellerId from item = '$sellerId'")
     println("🔍 isSeller = $isSeller")
 
-
+    // 거래 상태가 완료되면 다이얼로그 표시
+    LaunchedEffect(status) {
+        if (status == "거래완료" && !alreadyRated) {
+            showRatingDialog = true
+        }
+    }
 
     // 3) 메시지·상태 리스너
     LaunchedEffect(roomId) {
         viewModel.listenForMessage(roomId)
         viewModel.listenForTransactionStatus(roomId)
+
+        // 평점 매기기 완료했는지 확인
+        val ref = Firebase.database
+            .getReference("RatingsDone")
+            .child(roomId)
+            .child(currentUserId)
+
+        ref.get().addOnSuccessListener { snapshot ->
+            val done = snapshot.getValue(Boolean::class.java) ?: false
+            alreadyRated = done
+        }
     }
     // 4) 상품 정보 로드
     LaunchedEffect(itemId) {
@@ -158,6 +180,24 @@ fun ChatRoomScreen(
         MessageInput { text ->
             viewModel.sendMessage(roomId, currentUserId, text)
         }
+    }
+
+    if (showRatingDialog) {
+        RatingDialog(
+            targetUserId = partnerId,
+            onSubmit = { rating ->
+                RatingUtils.updateUserRating(partnerId, rating) { success ->
+                    if (success) {
+                        RatingUtils.markRatingDone(roomId, currentUserId)
+                        showRatingDialog = false
+                        alreadyRated = true
+                    }
+                }
+            },
+            onDismiss = {
+                showRatingDialog = false
+            }
+        )
     }
 }
 
