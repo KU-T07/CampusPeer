@@ -87,7 +87,12 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(22.dp))
 
         Button(
+
             onClick = {
+                if (email.isBlank() || password.isBlank()) {
+                    Toast.makeText(context, "이메일과 비밀번호를 모두 입력해주세요.", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
                 viewModel.login(email, password) { success, error ->
                     if (success) {
                         print("성공")

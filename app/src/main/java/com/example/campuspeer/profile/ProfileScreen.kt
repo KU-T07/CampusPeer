@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Star
@@ -51,7 +50,8 @@ fun ProfileScreen() {
     var email by remember { mutableStateOf("로딩 중...") }
     var studentNumber by remember { mutableStateOf("로딩 중...") }
     var rating by remember { mutableStateOf(0.0f) }
-    var ratingCount by remember { mutableStateOf(0L) }
+    var count by remember { mutableStateOf(0) }
+
     val usersRef = Firebase.database.getReference("Users")
     LaunchedEffect(Unit) {
         usersRef.child(viewModel.getCurrentUserId().toString()).get()
@@ -62,16 +62,16 @@ fun ProfileScreen() {
                 studentNumber = snapshot.child("studentNumber").getValue(String::class.java) ?: ""
 
                 val ratingTotal = snapshot.child("ratingTotal").getValue(Double::class.java) ?: 0.0
-                ratingCount = snapshot.child("ratingCount").getValue(Long::class.java) ?: 0L
-
+                val ratingCount = snapshot.child("ratingCount").getValue(Long::class.java) ?: 0L
                 rating = if (ratingCount > 0) (ratingTotal / ratingCount).toFloat() else 0.0f
+                count = snapshot.child("ratingCount").getValue(Int::class.java) ?: 0
             }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFFFF))
+            .background(Color(0xFFF8F4FC))
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -99,10 +99,11 @@ fun ProfileScreen() {
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Star, "평점", String.format("%.1f / 5", rating), Color(0xFFFFD700))
                 Spacer(modifier = Modifier.height(12.dp))
+                ProfileItem(Icons.Default.Person, "거래횟수", count.toString())
+                Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Person, "이메일", email)
                 Spacer(modifier = Modifier.height(12.dp))
                 ProfileItem(Icons.Default.Person, "학번", studentNumber)
-                ProfileItem(Icons.Default.Check, "거래 횟수", ratingCount.toInt().toString())
             }
         }
     }
