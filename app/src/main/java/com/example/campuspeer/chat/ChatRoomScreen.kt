@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.UserData
 import com.example.campuspeer.uicomponent.RatingDialog
+import com.example.campuspeer.util.BackButton
 import com.example.campuspeer.util.RatingUtils
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -45,6 +46,7 @@ import java.util.Locale
 
 @Composable
 fun ChatRoomScreen(
+    onBackClick: () -> Unit,
     roomId: String,
     currentUserId: String,
     partnerId: String,
@@ -52,8 +54,8 @@ fun ChatRoomScreen(
     viewModel: ChatViewModel = viewModel()
 ) {
     // 1) StateFlows 구독
-    val messages   by viewModel.messages.collectAsState()
-    val status     by viewModel.status.collectAsState()
+    val messages by viewModel.messages.collectAsState()
+    val status by viewModel.status.collectAsState()
     val currentItem by viewModel.currentItem.collectAsState()
     var partnerName by remember { mutableStateOf<String?>("로딩 중…") }
 
@@ -123,15 +125,26 @@ fun ChatRoomScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // ─── 채팅방 최상단: 상대방 이름
-        Text(
-            text = partnerName ?: "로딩 중…",
-            style = MaterialTheme.typography.titleLarge,
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF5F5F5))
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BackButton(onClick = onBackClick)
+
+            // ─── 채팅방 최상단: 상대방 이름
+            Text(
+                text = partnerName ?: "로딩 중…",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+        }
+
+
         // ─── 상품 정보 헤더 (판매자면 상태 드롭다운까지)
         currentItem?.let { item ->
             Row(
@@ -182,25 +195,25 @@ fun ChatRoomScreen(
         }
     }
 
-        if (showRatingDialog) {
-            RatingDialog(
-                targetUserId = partnerId,
-                onSubmit = { rating ->
-                    RatingUtils.updateUserRating(partnerId, rating) { success ->
-                        if (success) {
-                            RatingUtils.markRatingDone(roomId, currentUserId, true)
-                            showRatingDialog = false
-                            alreadyRated = true
-                        }
+    if (showRatingDialog) {
+        RatingDialog(
+            targetUserId = partnerId,
+            onSubmit = { rating ->
+                RatingUtils.updateUserRating(partnerId, rating) { success ->
+                    if (success) {
+                        RatingUtils.markRatingDone(roomId, currentUserId, true)
+                        showRatingDialog = false
+                        alreadyRated = true
                     }
-                },
-                onDismiss = {
-                    RatingUtils.markRatingDone(roomId, currentUserId, false)
-                    showRatingDialog = false
-                    alreadyRated = false
                 }
-            )
-        }
+            },
+            onDismiss = {
+                RatingUtils.markRatingDone(roomId, currentUserId, false)
+                showRatingDialog = false
+                alreadyRated = false
+            }
+        )
+    }
 
 }
 
