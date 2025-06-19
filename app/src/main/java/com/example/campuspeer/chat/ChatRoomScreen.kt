@@ -182,7 +182,7 @@ fun ChatRoomScreen(
         }
     }
 
-    if (showRatingDialog) {
+    if (showRatingDialog && alreadyRated == false) {
         RatingDialog(
             targetUserId = partnerId,
             onSubmit = { rating ->
