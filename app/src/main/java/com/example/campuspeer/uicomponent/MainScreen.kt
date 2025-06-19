@@ -3,14 +3,11 @@ package com.example.campuspeer.uicomponenti
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -37,9 +34,7 @@ import com.example.campuspeer.itemBoard.PostItemViewModel
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.navigation.BottomNavigationBar
 import com.example.campuspeer.navigation.NaviGraph
-import com.example.campuspeer.uicomponent.DrawerContent
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun rememberViewModelStoreOwner(): ViewModelStoreOwner {
@@ -108,20 +103,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             }
 
                         )
-                    else
-                        TopAppBar(
-                            title = { },
-                            navigationIcon = {
-                                /*IconButton(onClick = {
-                                    navController.popBackStack()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                        contentDescription = ""
-                                    )
-                                }*/
-                            }
-                        )
+                    else{}
+
                 },
                 bottomBar = {
                     if (currentRoute.isRoot)

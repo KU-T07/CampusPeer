@@ -104,7 +104,8 @@ fun NaviGraph(navController: NavHostController,
                 roomId        = backStackEntry.arguments!!.getString("roomId")!!,
                 currentUserId = Firebase.auth.currentUser!!.uid,
                 partnerId     = backStackEntry.arguments!!.getString("partnerId")!!,
-                itemId        = backStackEntry.arguments!!.getString("itemId")!!
+                itemId        = backStackEntry.arguments!!.getString("itemId")!!,
+                onBackClick   = { navController.popBackStack() }
             )
         }
 

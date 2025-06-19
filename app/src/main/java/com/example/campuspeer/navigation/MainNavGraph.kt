@@ -67,8 +67,8 @@ fun NavGraphBuilder.mainNavGraph(
                 roomId        = roomId,
                 currentUserId = currentUserId,
                 partnerId     = partnerId,
-                itemId        = itemId
-            )
+                itemId        = itemId,
+                onBackClick = { navController.popBackStack() }            )
         }
 
     }
