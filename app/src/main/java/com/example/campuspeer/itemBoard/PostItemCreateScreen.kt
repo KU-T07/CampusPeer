@@ -6,15 +6,14 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -47,6 +46,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.campuspeer.model.Category
 import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
+import com.example.campuspeer.util.BackButton
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -83,12 +83,20 @@ fun PostItemCreateScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("게시글 등록", style = MaterialTheme.typography.titleLarge)
+            BackButton(
+                onClick = onBackClick,
+                modifier = Modifier.align(Alignment.CenterStart)
+            )
+
+            Text(
+                text = "게시글 등록",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -133,7 +141,9 @@ fun PostItemCreateScreen(
             value = description,
             onValueChange = { description = it },
             placeholder = { Text("설명") },
-            modifier = Modifier.fillMaxWidth().height(120.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -153,8 +163,10 @@ fun PostItemCreateScreen(
                     .fillMaxWidth()
                     .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                 trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded,
-                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.SecondaryEditable))
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded,
+                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.SecondaryEditable)
+                    )
                 },
                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
             )
@@ -232,11 +244,14 @@ fun PostItemCreateScreen(
                                         finalPost,
                                         onSuccess = {
                                             navController.navigate(Routes.PostItemList.route) {
-                                                popUpTo(Routes.PostItemCreate.route) { inclusive = true }
+                                                popUpTo(Routes.PostItemCreate.route) {
+                                                    inclusive = true
+                                                }
                                             }
                                         },
                                         onFailure = {
-                                            Toast.makeText(context, "등록 실패", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "등록 실패", Toast.LENGTH_SHORT)
+                                                .show()
                                         }
                                     )
                                 }

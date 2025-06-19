@@ -44,6 +44,7 @@ import com.example.campuspeer.model.PostItem
 import com.example.campuspeer.model.Routes
 import com.example.campuspeer.model.UserData
 import com.example.campuspeer.uicomponents.MapComponent.MapMarkerDisplayScreen
+import com.example.campuspeer.util.BackButton
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.database.database
@@ -106,6 +107,8 @@ fun PostItemDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            BackButton(onClick = onBackClick)
+
             // 상단 이미지
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(
