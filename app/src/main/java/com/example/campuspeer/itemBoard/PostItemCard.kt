@@ -60,7 +60,8 @@ fun PostItemCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE8F5E9)) // 직접 지정한 카드 배경색
+            containerColor = Color(0x99AFD0B0)
+        )
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
             Image(

@@ -22,6 +22,10 @@ import com.example.campuspeer.model.Routes
 import com.example.campuspeer.model.UserData
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.campuspeer.ui.theme.Pretendard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +80,10 @@ fun PostItemListScreen(
             ModalDrawerSheet( drawerContainerColor = Color.White){
 
                 Column(modifier = Modifier.padding(top = 32.dp).background(Color(0xFFFFFFFF))) {
-                    Text("\uD83D\uDD0D 필터", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
+                    Text("필터", modifier = Modifier.padding(16.dp), style = TextStyle(
+                        fontFamily = Pretendard,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp))
 
                     var expanded by remember { mutableStateOf(false) }
                     val categories = listOf<Category?>(null) + Category.entries
@@ -90,9 +97,12 @@ fun PostItemListScreen(
                             value = selectedCategoryFilter?.label ?: "전체",
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("카테고리") },
+                            label = { Text("카테고리", style = TextStyle(
+                                fontFamily = Pretendard,
+                                fontWeight = FontWeight.Normal)) },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             modifier = Modifier.menuAnchor().fillMaxWidth()
+
                         )
 
                         ExposedDropdownMenu(
@@ -106,6 +116,7 @@ fun PostItemListScreen(
                                         selectedCategoryFilter = category
                                         expanded = false
                                     }
+                                    ,Modifier.background(Color(0xFFFFFFFF))
                                 )
                             }
                         }

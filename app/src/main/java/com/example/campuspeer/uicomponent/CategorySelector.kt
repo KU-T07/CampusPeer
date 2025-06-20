@@ -1,5 +1,6 @@
 package com.example.campuspeer.uicomponent
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.campuspeer.model.Category
@@ -41,6 +43,7 @@ fun CategorySelector(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
+                .background(Color(0xFFFFFFFF))
         ) {
             OutlinedTextField(
                 value = selectedCategory.label, // enum의 label 사용
@@ -51,11 +54,13 @@ fun CategorySelector(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
+                    .background(Color(0xFFFFFFFF))
             )
 
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onDismissRequest = { expanded = false },
+                modifier.background(Color(0xFFFFFFFF))
             ) {
                 categories.forEach { category ->
                     DropdownMenuItem(
@@ -63,7 +68,8 @@ fun CategorySelector(
                         onClick = {
                             onCategorySelected(category) // enum 객체 전달
                             expanded = false
-                        }
+                        },
+                        modifier.background(Color(0xFFFFFFFF))
                     )
                 }
             }

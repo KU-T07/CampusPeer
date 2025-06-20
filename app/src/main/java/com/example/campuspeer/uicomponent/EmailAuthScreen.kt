@@ -27,12 +27,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.campuspeer.LocalEmailAuthViewModelOwner
+import com.example.campuspeer.ui.theme.Pretendard
 import com.example.campuspeer.util.sendEmailToAdmin
 import com.example.campuspeer.viewmodel.EmailAuthViewModel
 
@@ -70,8 +73,15 @@ fun EmailAuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text("CampusPeer", fontSize = 28.sp)
-        Text("Sign Up", fontSize = 20.sp)
+        Text("CampusPeer", style = TextStyle(
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp))
+        Text("Sign Up", style = TextStyle(
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp))
+
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
